@@ -496,12 +496,12 @@ function translateAttrs(lang) {
 
 // Nav link href → key map (fallback, walker zaten çeviriyor ama emin olalım)
 const NAV_LINK_MAP = {
-  'index.html':     'nav.home',
-  'kurallar.html':  'nav.rules',
-  'yetki.html':     'nav.authority',
-  'yasaklama.html': 'nav.bans',
-  'kaplamalar.html':'nav.skins',
-  'yoneticiler.html':'nav.admins',
+  '/':             'nav.home',
+  '/kurallar':     'nav.rules',
+  '/yetki':        'nav.authority',
+  '/yasaklama':    'nav.bans',
+  '/kaplamalar':   'nav.skins',
+  '/yoneticiler':  'nav.admins',
 };
 
 let CURRENT_LANG = 'tr';

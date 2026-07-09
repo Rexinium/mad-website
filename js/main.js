@@ -48,9 +48,11 @@ function initBurger() {
 
 /* === ACTIVE NAV LINK === */
 function setActiveNav() {
-  const path = location.pathname.split('/').pop() || 'index.html';
+  // Path'i normalize et: /kurallar.html → /kurallar, / → /
+  const raw = location.pathname.replace(/\.html$/, '').replace(/\/$/, '') || '/';
   document.querySelectorAll('.nav-links a').forEach(a => {
-    a.classList.toggle('active', a.getAttribute('href') === path);
+    const href = a.getAttribute('href') || '';
+    a.classList.toggle('active', href === raw || (raw === '/' && href === '/'));
   });
 }
 
@@ -613,7 +615,7 @@ function initYetkiliForm() {
 
     // Client-side validation
     const age = parseInt(payload.age, 10);
-    if (isNaN(age) || age < 16) return showError('Yaş en az 16 olmalı.');
+    if (isNaN(age) || age < 16 || age > 70) return showError('Yaş 16-70 arasında olmalı.');
     if (!payload.server) return showError('Bir sunucu seç.');
     if (!payload.rulesRead) return showError('Kuralları okuduğunu kabul etmen gerek.');
     const activeMin = parseInt(payload.activeMin, 10);

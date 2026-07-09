@@ -111,9 +111,9 @@ if (!isset($SERVER_LABEL[$server])) {
 
 // ---- Yaş ----
 $age = (int)$body['age'];
-if ($age < 16 || $age > 80) {
+if ($age < 16 || $age > 70) {
     http_response_code(400);
-    echo json_encode(['error' => 'invalid_age', 'message' => 'Yaş 16-80 arasında olmalı']);
+    echo json_encode(['error' => 'invalid_age', 'message' => 'Yaş 16-70 arasında olmalı']);
     exit;
 }
 
@@ -157,7 +157,7 @@ $embed = [
         ['name' => '⏱️ CS2 Süresi',           'value' => $esc($body['cs2Hours'], 10) . ' saat', 'inline' => true],
         ['name' => '🎯 Rank',                 'value' => $esc($body['rank'], 30), 'inline' => true],
         ['name' => '💎 Prime',                'value' => $esc($body['prime'], 20), 'inline' => true],
-        ['name' => '🕵️ TW Bakma',             'value' => $esc($body['twKnow'], 10), 'inline' => true],
+        ['name' => '🕵️ TeamViewer Bakma',     'value' => $esc($body['twKnow'], 10), 'inline' => true],
         ['name' => '🎙️ Mikrofon',             'value' => $esc($body['mic'], 10), 'inline' => true],
         ['name' => '📆 Günlük Aktif',         'value' => $esc($body['activeMin'], 5) . '–' . $esc($body['activeMax'], 5) . ' saat', 'inline' => true],
         ['name' => '🕰️ Okul/İş Programı',     'value' => $esc($body['schedule'], 500) ?: '—', 'inline' => false],
