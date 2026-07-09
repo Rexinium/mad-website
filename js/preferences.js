@@ -1,49 +1,6 @@
-/* === MAD — Kullanıcı Tercihleri (Tema + Arka Plan Efekti + Dil) ===
+/* === MAD — Kullanıcı Tercihleri (Sadece Dil) ===
  * localStorage'a kaydedilir, sayfa yüklenirken uygulanır.
- * Nav sağ tarafına 3 küçük buton enjekte edilir (paint / sparkle / globe). */
-
-/* -----------------------------------------------------------------
- * TEMALAR
- * ----------------------------------------------------------------- */
-const THEMES = {
-  red:    { label: { tr: 'Ateş', en: 'Fire',    ru: 'Огонь'    }, dot: '#ff3b1a' },
-  blue:   { label: { tr: 'Buz',  en: 'Ice',     ru: 'Лёд'      }, dot: '#3b82f6' },
-  purple: { label: { tr: 'Kozmik', en: 'Cosmic', ru: 'Космос'  }, dot: '#a855f7' },
-};
-
-/* -----------------------------------------------------------------
- * EFEKTLER — her tema kendi paketini taşır
- * key: bir slotu tanımlar (kapat/parcacik/yagmur/matrix/siber/ates_bocegi/patlama)
- * Kırmızı temada kar/yağmur olmaz → tematik uygun alternatifler. */
-const EFFECT_PACKAGES = {
-  red: [
-    { id: 'off',          label: { tr: 'Kapat',           en: 'Off',           ru: 'Выкл.'      }, emoji: '🚫' },
-    { id: 'ashes',        label: { tr: 'Kül',             en: 'Ashes',         ru: 'Пепел'      }, emoji: '🌋' },
-    { id: 'firerain',     label: { tr: 'Ateş yağmuru',    en: 'Fire rain',     ru: 'Огненный дождь' }, emoji: '☄️' },
-    { id: 'cyber-red',    label: { tr: 'Siber',           en: 'Cyber',         ru: 'Кибер'      }, emoji: '✨' },
-    { id: 'matrix-red',   label: { tr: 'Matrix',          en: 'Matrix',        ru: 'Матрица'    }, emoji: '💻' },
-    { id: 'sparks',       label: { tr: 'Kıvılcım',        en: 'Sparks',        ru: 'Искры'      }, emoji: '🔥' },
-    { id: 'stars-red',    label: { tr: 'Yıldızlar',       en: 'Stars',         ru: 'Звёзды'     }, emoji: '⭐' },
-  ],
-  blue: [
-    { id: 'off',          label: { tr: 'Kapat',           en: 'Off',           ru: 'Выкл.'      }, emoji: '🚫' },
-    { id: 'snow',         label: { tr: 'Kar',             en: 'Snow',          ru: 'Снег'       }, emoji: '❄️' },
-    { id: 'rain',         label: { tr: 'Yağmur',          en: 'Rain',          ru: 'Дождь'      }, emoji: '🌧️' },
-    { id: 'cyber-blue',   label: { tr: 'Siber',           en: 'Cyber',         ru: 'Кибер'      }, emoji: '✨' },
-    { id: 'matrix-blue',  label: { tr: 'Matrix',          en: 'Matrix',        ru: 'Матрица'    }, emoji: '💻' },
-    { id: 'fireflies',    label: { tr: 'Ateş böceği',     en: 'Fireflies',     ru: 'Светлячки'  }, emoji: '🪲' },
-    { id: 'stars-blue',   label: { tr: 'Yıldızlar',       en: 'Stars',         ru: 'Звёзды'     }, emoji: '⭐' },
-  ],
-  purple: [
-    { id: 'off',          label: { tr: 'Kapat',           en: 'Off',           ru: 'Выкл.'      }, emoji: '🚫' },
-    { id: 'dust',         label: { tr: 'Toz',             en: 'Dust',          ru: 'Пыль'       }, emoji: '💫' },
-    { id: 'meteor',       label: { tr: 'Meteor yağmuru',  en: 'Meteor rain',   ru: 'Метеорный дождь' }, emoji: '☄️' },
-    { id: 'cyber-purple', label: { tr: 'Siber',           en: 'Cyber',         ru: 'Кибер'      }, emoji: '✨' },
-    { id: 'matrix-purple',label: { tr: 'Matrix',          en: 'Matrix',        ru: 'Матрица'    }, emoji: '💻' },
-    { id: 'stardust',     label: { tr: 'Yıldız tozu',     en: 'Stardust',      ru: 'Звёздная пыль' }, emoji: '✨' },
-    { id: 'supernova',    label: { tr: 'Süpernova',       en: 'Supernova',     ru: 'Сверхновая' }, emoji: '💥' },
-  ],
-};
+ * Nav sağ tarafına dil butonu enjekte edilir. */
 
 /* -----------------------------------------------------------------
  * DİLLER
@@ -60,7 +17,6 @@ const I18N = {
   'nav.home':       { tr: 'Ana Sayfa',         en: 'Home',              ru: 'Главная' },
   'nav.rules':      { tr: 'Kurallar',          en: 'Rules',             ru: 'Правила' },
   'nav.authority':  { tr: 'Yetki Listesi',     en: 'Authority',         ru: 'Права' },
-  'nav.leaderboard':{ tr: 'Liderlik Tablosu',  en: 'Leaderboard',       ru: 'Лидерборд' },
   'nav.bans':       { tr: 'Yasaklama',         en: 'Bans',              ru: 'Баны' },
   'nav.skins':      { tr: 'Kaplamalar',        en: 'Skins',             ru: 'Скины' },
   'nav.admins':     { tr: 'Yöneticiler',       en: 'Admins',            ru: 'Админы' },
@@ -111,8 +67,6 @@ const I18N = {
   'apply.btn':      { tr: 'Başvuru Formunu Aç', en: 'Open Application',  ru: 'Открыть форму' },
 
   // Prefs panel
-  'pref.theme':     { tr: 'Tema',              en: 'Theme',             ru: 'Тема' },
-  'pref.effect':    { tr: 'Arka plan',         en: 'Background',        ru: 'Фон' },
   'pref.lang':      { tr: 'Dil',               en: 'Language',          ru: 'Язык' },
 
   // Footer
@@ -120,95 +74,18 @@ const I18N = {
 };
 
 const PREF_KEY = 'mad_prefs';
-const DEFAULTS = { theme: 'red', effect: 'off', lang: 'tr' };
+const DEFAULTS = { lang: 'tr' };
 
 function loadPrefs() {
   try {
     const raw = localStorage.getItem(PREF_KEY);
     if (!raw) return { ...DEFAULTS };
     const p = JSON.parse(raw);
-    return {
-      theme: THEMES[p.theme] ? p.theme : DEFAULTS.theme,
-      effect: p.effect || DEFAULTS.effect,
-      lang: LANGS[p.lang] ? p.lang : DEFAULTS.lang,
-    };
+    return { lang: LANGS[p.lang] ? p.lang : DEFAULTS.lang };
   } catch { return { ...DEFAULTS }; }
 }
 function savePrefs(p) {
   try { localStorage.setItem(PREF_KEY, JSON.stringify(p)); } catch {}
-}
-
-/* -----------------------------------------------------------------
- * TEMA UYGULAMA
- * ----------------------------------------------------------------- */
-function applyTheme(theme) {
-  document.documentElement.setAttribute('data-theme', theme);
-}
-
-/* -----------------------------------------------------------------
- * EFEKT UYGULAMA
- * ----------------------------------------------------------------- */
-function applyEffect(theme, effectId) {
-  // Ana lava-bg elementini bul veya oluştur
-  let bg = document.querySelector('.lava-bg');
-  if (!bg) return;
-
-  // Efekt katmanını yönet
-  let fx = document.querySelector('.fx-layer');
-  if (!fx) {
-    fx = document.createElement('div');
-    fx.className = 'fx-layer';
-    document.body.insertBefore(fx, document.body.firstChild);
-  }
-  fx.innerHTML = '';
-  fx.className = 'fx-layer fx-' + effectId;
-
-  if (effectId === 'off' || !effectId) return;
-
-  // Efekt tiplerine göre partikül üret
-  const config = {
-    // Kırmızı tema
-    ashes:        { count: 40, cls: 'p-ash' },
-    firerain:     { count: 25, cls: 'p-firedrop' },
-    'cyber-red':  { count: 60, cls: 'p-cyber-r' },
-    'matrix-red': { count: 15, cls: 'p-matrix-r', text: true },
-    sparks:       { count: 35, cls: 'p-spark' },
-    'stars-red':  { count: 50, cls: 'p-star-r' },
-    // Mavi
-    snow:         { count: 60, cls: 'p-snow' },
-    rain:         { count: 40, cls: 'p-raindrop' },
-    'cyber-blue': { count: 60, cls: 'p-cyber-b' },
-    'matrix-blue':{ count: 15, cls: 'p-matrix-b', text: true },
-    fireflies:    { count: 30, cls: 'p-firefly' },
-    'stars-blue': { count: 50, cls: 'p-star-b' },
-    // Mor
-    dust:         { count: 50, cls: 'p-dust' },
-    meteor:       { count: 12, cls: 'p-meteor' },
-    'cyber-purple':{ count: 60, cls: 'p-cyber-p' },
-    'matrix-purple':{ count: 15, cls: 'p-matrix-p', text: true },
-    stardust:     { count: 55, cls: 'p-stardust' },
-    supernova:    { count: 8,  cls: 'p-supernova' },
-  }[effectId];
-
-  if (!config) return;
-
-  const glyphs = '01ABCDEFGHIJKLMNOPQRSTUVWXYZ$#@%*';
-  for (let i = 0; i < config.count; i++) {
-    const p = document.createElement('div');
-    p.className = 'fx-particle ' + config.cls;
-    p.style.left = (Math.random() * 100) + '%';
-    p.style.setProperty('--d', (Math.random() * 8 + 4) + 's');
-    p.style.setProperty('--dl', (-Math.random() * 8) + 's');
-    p.style.setProperty('--x', (Math.random() * 40 - 20) + 'vw');
-    p.style.setProperty('--s', (Math.random() * 0.6 + 0.7));
-    if (config.text) {
-      const chars = 8 + Math.floor(Math.random() * 12);
-      let txt = '';
-      for (let j = 0; j < chars; j++) txt += glyphs[Math.floor(Math.random() * glyphs.length)] + '\n';
-      p.textContent = txt.trim();
-    }
-    fx.appendChild(p);
-  }
 }
 
 /* -----------------------------------------------------------------
@@ -231,7 +108,6 @@ const TRANSLATIONS = {
   'Ana Sayfa':        { en: 'Home', ru: 'Главная' },
   'Kurallar':         { en: 'Rules', ru: 'Правила' },
   'Yetki Listesi':    { en: 'Authority', ru: 'Права' },
-  'Liderlik Tablosu': { en: 'Leaderboard', ru: 'Лидерборд' },
   'Yasaklama':        { en: 'Bans', ru: 'Баны' },
   'Kaplamalar':       { en: 'Skins', ru: 'Скины' },
   'Yöneticiler':      { en: 'Admins', ru: 'Админы' },
@@ -623,7 +499,6 @@ const NAV_LINK_MAP = {
   'index.html':     'nav.home',
   'kurallar.html':  'nav.rules',
   'yetki.html':     'nav.authority',
-  'liderboard.html':'nav.leaderboard',
   'yasaklama.html': 'nav.bans',
   'kaplamalar.html':'nav.skins',
   'yoneticiler.html':'nav.admins',
@@ -656,7 +531,7 @@ function initDynamicTranslation() {
 }
 
 /* -----------------------------------------------------------------
- * UI: Nav'a butonları ve dropdown'ları enjekte et
+ * UI: Nav'a dil butonu ve dropdown enjekte et
  * ----------------------------------------------------------------- */
 function injectPrefsUI(state) {
   const nav = document.querySelector('.nav-inner');
@@ -665,31 +540,6 @@ function injectPrefsUI(state) {
   const wrap = document.createElement('div');
   wrap.className = 'pref-controls';
   wrap.innerHTML = `
-    <div class="pref-btn-group">
-      <button class="pref-btn" data-pref="theme" title="${t('pref.theme', state.lang)}" aria-label="Theme">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="13.5" cy="6.5" r="1"/><circle cx="17.5" cy="10.5" r="1"/><circle cx="8.5" cy="7.5" r="1"/><circle cx="6.5" cy="12.5" r="1"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.9 0 1.5-.6 1.5-1.5 0-.4-.2-.8-.4-1.1-.3-.3-.4-.7-.4-1.1 0-.9.6-1.5 1.5-1.5H16c3.3 0 6-2.7 6-6 0-5-4.5-9-10-9z"/></svg>
-      </button>
-      <div class="pref-drop" data-drop="theme">
-        <div class="pref-drop-title">${t('pref.theme', state.lang)}</div>
-        ${Object.entries(THEMES).map(([k,v]) => `
-          <button class="pref-item pref-theme-item" data-value="${k}">
-            <span class="pref-swatch" style="background:${v.dot}"></span>
-            <span>${v.label[state.lang] || v.label.tr}</span>
-          </button>
-        `).join('')}
-      </div>
-    </div>
-
-    <div class="pref-btn-group">
-      <button class="pref-btn" data-pref="effect" title="${t('pref.effect', state.lang)}" aria-label="Effect">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.9 4.6L19 9l-4 3.3L16.2 18 12 15l-4.2 3L9 12.3 5 9l5.1-1.4z"/></svg>
-      </button>
-      <div class="pref-drop" data-drop="effect">
-        <div class="pref-drop-title">${t('pref.effect', state.lang)}</div>
-        <div class="pref-effect-list"></div>
-      </div>
-    </div>
-
     <div class="pref-btn-group">
       <button class="pref-btn" data-pref="lang" title="${t('pref.lang', state.lang)}" aria-label="Language">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15 15 0 0 1 0 20"/><path d="M12 2a15 15 0 0 0 0 20"/></svg>
@@ -710,26 +560,11 @@ function injectPrefsUI(state) {
   if (burger) nav.insertBefore(wrap, burger);
   else nav.appendChild(wrap);
 
-  refreshEffectList(state);
   bindPrefsUI(state);
-  markActiveInDropdowns(state);
+  markActive(state);
 }
 
-function refreshEffectList(state) {
-  const list = document.querySelector('.pref-effect-list');
-  if (!list) return;
-  const pkg = EFFECT_PACKAGES[state.theme] || EFFECT_PACKAGES.red;
-  list.innerHTML = pkg.map(fx => `
-    <button class="pref-item pref-effect-item" data-value="${fx.id}">
-      <span class="pref-emoji">${fx.emoji}</span>
-      <span>${fx.label[state.lang] || fx.label.tr}</span>
-    </button>
-  `).join('');
-}
-
-function markActiveInDropdowns(state) {
-  document.querySelectorAll('.pref-theme-item').forEach(b => b.classList.toggle('active', b.dataset.value === state.theme));
-  document.querySelectorAll('.pref-effect-item').forEach(b => b.classList.toggle('active', b.dataset.value === state.effect));
+function markActive(state) {
   document.querySelectorAll('.pref-lang-item').forEach(b => b.classList.toggle('active', b.dataset.value === state.lang));
 }
 
@@ -739,8 +574,7 @@ function bindPrefsUI(state) {
   document.querySelectorAll('.pref-btn').forEach(btn => {
     btn.addEventListener('click', e => {
       e.stopPropagation();
-      const which = btn.dataset.pref;
-      const drop = document.querySelector(`.pref-drop[data-drop="${which}"]`);
+      const drop = document.querySelector(`.pref-drop[data-drop="${btn.dataset.pref}"]`);
       const wasOpen = drop.classList.contains('open');
       closeAll();
       if (!wasOpen) drop.classList.add('open');
@@ -751,34 +585,6 @@ function bindPrefsUI(state) {
     if (!e.target.closest('.pref-controls')) closeAll();
   });
 
-  // Tema seçim
-  document.addEventListener('click', e => {
-    const item = e.target.closest('.pref-theme-item');
-    if (!item) return;
-    const newTheme = item.dataset.value;
-    if (newTheme === state.theme) return closeAll();
-    state.theme = newTheme;
-    // Efekti reset et — yeni tema paketinde farklı slot'lar olabilir
-    state.effect = 'off';
-    savePrefs(state);
-    applyTheme(state.theme);
-    refreshEffectList(state);
-    applyEffect(state.theme, state.effect);
-    markActiveInDropdowns(state);
-    closeAll();
-  });
-
-  // Efekt seçim
-  document.addEventListener('click', e => {
-    const item = e.target.closest('.pref-effect-item');
-    if (!item) return;
-    state.effect = item.dataset.value;
-    savePrefs(state);
-    applyEffect(state.theme, state.effect);
-    markActiveInDropdowns(state);
-    closeAll();
-  });
-
   // Dil seçim
   document.addEventListener('click', e => {
     const item = e.target.closest('.pref-lang-item');
@@ -786,33 +592,13 @@ function bindPrefsUI(state) {
     state.lang = item.dataset.value;
     savePrefs(state);
     applyLang(state.lang);
-    // Panel içeriği de dile göre değişsin
-    refreshPanelText(state);
-    refreshEffectList(state);
-    markActiveInDropdowns(state);
+    // Panel başlığı ve buton title'ı da dile göre güncellensin
+    const titleEl = document.querySelector('.pref-drop[data-drop="lang"] .pref-drop-title');
+    const btn = document.querySelector('.pref-btn[data-pref="lang"]');
+    if (titleEl) titleEl.textContent = t('pref.lang', state.lang);
+    if (btn) btn.title = t('pref.lang', state.lang);
+    markActive(state);
     closeAll();
-  });
-}
-
-function refreshPanelText(state) {
-  const map = {
-    theme: 'pref.theme',
-    effect: 'pref.effect',
-    lang: 'pref.lang',
-  };
-  document.querySelectorAll('.pref-btn').forEach(b => {
-    const w = b.dataset.pref;
-    if (map[w]) b.title = t(map[w], state.lang);
-  });
-  document.querySelectorAll('.pref-drop').forEach(d => {
-    const w = d.dataset.drop;
-    const titleEl = d.querySelector('.pref-drop-title');
-    if (titleEl && map[w]) titleEl.textContent = t(map[w], state.lang);
-  });
-  // Tema label'ları
-  const themeBtns = document.querySelectorAll('.pref-theme-item');
-  Object.entries(THEMES).forEach(([k, v], i) => {
-    if (themeBtns[i]) themeBtns[i].lastElementChild.textContent = v.label[state.lang] || v.label.tr;
   });
 }
 
@@ -820,17 +606,13 @@ function refreshPanelText(state) {
  * INIT
  * ----------------------------------------------------------------- */
 (function initEarly() {
-  // Sayfa yüklenmeden önce tema uygula (FOUC engelle)
   const p = loadPrefs();
-  applyTheme(p.theme);
   document.documentElement.setAttribute('lang', p.lang);
 })();
 
 document.addEventListener('DOMContentLoaded', () => {
   const state = loadPrefs();
-  applyTheme(state.theme);
   applyLang(state.lang);
-  applyEffect(state.theme, state.effect);
   injectPrefsUI(state);
   initDynamicTranslation();
 });
