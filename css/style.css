@@ -601,25 +601,21 @@ body {
 
 .auth-card.featured::after { opacity: 1; }
 
-/* Kart başlığı = kartın adı (badge kaldırıldı, başlık kart-özel renkte pill) */
+/* Kart başlığı = kartın adı, hepsi sabit temaya uyumlu kırmızı ton */
 .auth-title {
   display: inline-block;
   font-size: 1rem;
   font-weight: 800;
-  letter-spacing: 0.03em;
+  letter-spacing: 0.05em;
   text-transform: uppercase;
-  padding: 0.35rem 0.85rem;
+  padding: 0.42rem 0.95rem;
   border-radius: 100px;
-  margin-bottom: 0.6rem;
+  margin-bottom: 0.7rem;
   align-self: flex-start;
+  background: rgba(255,60,26,0.12);
+  color: #ff8060;
+  border: 1px solid rgba(255,60,26,0.35);
 }
-
-.auth-card:nth-child(1) .auth-title { background: rgba(255,50,0,0.15); color: #ff5a2a; border: 1px solid rgba(255,50,0,0.35); }
-.auth-card:nth-child(2) .auth-title { background: rgba(255,110,0,0.15); color: #ff8a30; border: 1px solid rgba(255,110,0,0.35); }
-.auth-card:nth-child(3) .auth-title { background: rgba(180,120,255,0.15); color: #c090ff; border: 1px solid rgba(180,120,255,0.35); }
-.auth-card:nth-child(4) .auth-title { background: rgba(80,150,255,0.13); color: #7ab5ff; border: 1px solid rgba(80,150,255,0.35); }
-.auth-card:nth-child(5) .auth-title { background: rgba(80,220,120,0.13); color: #7de095; border: 1px solid rgba(80,220,120,0.35); }
-.auth-card:nth-child(6) .auth-title { background: rgba(180,180,190,0.1); color: #d0d5df; border: 1px solid rgba(180,180,190,0.3); }
 
 .auth-price {
   margin: 0.75rem 0;
@@ -2256,28 +2252,68 @@ body {
   background-position: right 1rem center;
   padding-right: 2.5rem;
 }
+/* Global: hidden attribute'u tüm layout'larda gizler (flex/grid içinde bile) */
+.form-body [hidden] { display: none !important; }
+
+/* Sunucu seçilmeden önce gösterilen "Önce sunucu seç" hint kutusu */
+.form-empty-hint {
+  padding: 0.85rem 1rem;
+  background: rgba(255,255,255,0.02);
+  border: 1px dashed rgba(255,255,255,0.15);
+  border-radius: 9px;
+  color: var(--text-dim);
+  font-size: 0.88rem;
+  font-style: italic;
+  text-align: center;
+}
+
 .form-radio-group { display: flex; gap: 0.55rem; flex-wrap: wrap; }
 .form-radio {
-  display: inline-flex; align-items: center; gap: 0.5rem;
-  padding: 0.65rem 1.1rem;
+  display: inline-flex; align-items: center; gap: 0.55rem;
+  padding: 0.75rem 1.15rem;
   background: rgba(255,255,255,0.035);
   border: 1px solid rgba(255,255,255,0.1);
-  border-radius: 9px; cursor: pointer;
-  font-size: 0.9rem; font-weight: 600; user-select: none;
-  transition: all 0.15s ease;
-  min-width: 88px;
+  border-radius: 10px; cursor: pointer;
+  font-size: 0.92rem; font-weight: 600; user-select: none;
+  transition: all 0.18s ease;
+  min-width: 96px;
   justify-content: center;
+  position: relative;
 }
+/* Native radio input'u gizle — custom görsel dot koy */
 .form-radio input {
-  accent-color: #ff3b1a;
-  cursor: pointer;
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+.form-radio::before {
+  content: '';
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 2px solid rgba(255,255,255,0.25);
+  background: transparent;
+  transition: all 0.18s ease;
+  flex-shrink: 0;
 }
 .form-radio:hover { background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.2); }
+.form-radio:hover::before { border-color: rgba(255,255,255,0.4); }
 .form-radio:has(input:checked) {
   background: linear-gradient(135deg, rgba(255,60,26,0.16), rgba(255,60,26,0.08));
   border-color: rgba(255,60,26,0.55);
   color: #ff9060;
-  box-shadow: 0 0 0 3px rgba(255,60,26,0.1);
+}
+.form-radio:has(input:checked)::before {
+  border-color: #ff3b1a;
+  background: radial-gradient(circle, #ff3b1a 45%, transparent 50%);
+  box-shadow: 0 0 8px rgba(255,60,26,0.6);
+}
+/* Focus outline kaldır — native browser kare focus yerine bordura ışıltı */
+.form-radio:focus-within {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(255,60,26,0.2);
 }
 .form-inline-two { display: flex; align-items: center; gap: 0.5rem; }
 .form-inline-two input[type="number"] { max-width: 110px; }
@@ -2298,45 +2334,70 @@ body {
   color: #ff8080; font-size: 0.85rem;
 }
 .form-actions {
-  display: flex; gap: 0.8rem; justify-content: flex-end; align-items: center;
-  padding: 1rem 0 0.2rem;
+  display: flex; gap: 0.75rem; justify-content: flex-end; align-items: center;
+  padding: 1.25rem 0 0.2rem;
   margin-top: 0.6rem;
   border-top: 1px solid rgba(255,255,255,0.08);
 }
 .form-cancel {
-  padding: 0.85rem 1.5rem; font-size: 0.92rem; font-weight: 600;
-  background: transparent; border: none;
-  color: var(--text-muted); cursor: pointer;
-  transition: color 0.15s, background 0.15s;
-  border-radius: 8px;
+  padding: 0.85rem 1.6rem;
+  font-size: 0.92rem; font-weight: 600;
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.14);
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border-radius: 10px;
   font-family: inherit;
 }
-.form-cancel:hover { color: #fff; background: rgba(255,255,255,0.05); }
+.form-cancel:hover {
+  color: #fff;
+  background: rgba(255,255,255,0.04);
+  border-color: rgba(255,255,255,0.28);
+}
+.form-cancel:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(255,255,255,0.15);
+}
 .form-submit {
   min-width: 200px;
-  padding: 0.95rem 2rem;
-  font-size: 0.98rem;
-  font-weight: 800;
+  padding: 0.9rem 2rem;
+  font-size: 0.95rem;
+  font-weight: 700;
   letter-spacing: 0.02em;
-  background: linear-gradient(135deg, #ff3b1a 0%, #ff6844 60%, #ff9420 100%);
-  background-size: 200% 200%;
-  background-position: 0% 50%;
+  background: #ff3b1a;
   color: #fff;
-  border: none;
+  border: 1px solid rgba(255,60,26,0.85);
   border-radius: 10px;
   cursor: pointer;
-  box-shadow: 0 6px 20px rgba(255,60,26,0.35), inset 0 1px 0 rgba(255,255,255,0.15);
-  transition: transform 0.15s ease, box-shadow 0.15s ease, background-position 0.3s ease;
+  box-shadow: 0 4px 14px rgba(255,60,26,0.28);
+  transition: all 0.2s ease;
   font-family: inherit;
   position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+.form-submit::after {
+  content: '→';
+  font-size: 1.1rem;
+  font-weight: 400;
+  transition: transform 0.2s ease;
 }
 .form-submit:hover:not(:disabled) {
-  background-position: 100% 50%;
-  box-shadow: 0 10px 28px rgba(255,60,26,0.55), inset 0 1px 0 rgba(255,255,255,0.2);
+  background: #ff5230;
+  box-shadow: 0 6px 22px rgba(255,60,26,0.5);
   transform: translateY(-1px);
 }
+.form-submit:hover:not(:disabled)::after { transform: translateX(3px); }
 .form-submit:active:not(:disabled) { transform: translateY(0); }
+.form-submit:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(255,60,26,0.35), 0 4px 14px rgba(255,60,26,0.28);
+}
 .form-submit:disabled { opacity: 0.6; cursor: wait; }
+.form-submit:disabled::after { display: none; }
 
 /* =========================================================
  * PREFS UI — nav sağ tarafında dil butonu + dropdown

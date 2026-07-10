@@ -605,27 +605,44 @@ function initYetkiliForm() {
   });
 
   // Server radio değişince rank alanını dinamik değiştir
-  // AWP → CS2 rankları, AIM/Redline → puan aralığı
-  const rankAwp    = form.querySelector('[data-rank-for="awp"]');
-  const rankScore  = form.querySelector('[data-rank-for="score"]');
+  // AWP → CS2 rankları, AIM/Redline → puan aralığı, seçilmemişse "sunucu seç" hint
+  const rankAwpSel      = form.querySelector('select[data-rank-for="awp"]');
+  const rankScoreSel    = form.querySelector('select[data-rank-for="score"]');
   const rankPlaceholder = form.querySelector('[data-rank-placeholder]');
-  const rankAwpSel   = rankAwp?.querySelector('select');
-  const rankScoreSel = rankScore?.querySelector('select');
+  const rankLabel       = form.querySelector('#rankLabel');
 
   function updateRankVisibility(server) {
-    if (!rankAwp || !rankScore || !rankPlaceholder) return;
-    const showAwp = server === 'awp';
+    if (!rankAwpSel || !rankScoreSel || !rankPlaceholder) return;
+    const showAwp   = server === 'awp';
     const showScore = server === 'aim' || server === 'redline';
-    rankAwp.hidden = !showAwp;
-    rankScore.hidden = !showScore;
+
     rankPlaceholder.hidden = showAwp || showScore;
-    if (rankAwpSel)   { rankAwpSel.disabled = !showAwp;   if (showAwp)   rankAwpSel.required = true;  else { rankAwpSel.required = false;   rankAwpSel.value = ''; } }
-    if (rankScoreSel) { rankScoreSel.disabled = !showScore; if (showScore) rankScoreSel.required = true; else { rankScoreSel.required = false; rankScoreSel.value = ''; } }
+    rankAwpSel.hidden      = !showAwp;
+    rankScoreSel.hidden    = !showScore;
+
+    rankAwpSel.disabled   = !showAwp;
+    rankAwpSel.required   = showAwp;
+    if (!showAwp) rankAwpSel.value = '';
+
+    rankScoreSel.disabled = !showScore;
+    rankScoreSel.required = showScore;
+    if (!showScore) rankScoreSel.value = '';
+
+    // Label metnini de context'e göre değiştir
+    if (rankLabel) {
+      let text;
+      if (showAwp)        text = 'CS2 Rankın';
+      else if (showScore) text = 'Sunucudaki Puan Aralığın';
+      else                text = 'Rank / Puan Aralığın';
+      rankLabel.firstChild.nodeValue = text + ' ';
+    }
   }
 
   form.querySelectorAll('input[name="server"]').forEach(r => {
     r.addEventListener('change', () => updateRankVisibility(r.value));
   });
+  // Modal açılışında da default hint gösterilsin (form.reset sonrası vb.)
+  updateRankVisibility(null);
 
   form.addEventListener('submit', async e => {
     e.preventDefault();

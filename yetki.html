@@ -212,7 +212,7 @@
           </div>
           <div class="form-row">
             <label class="form-label">Yaş <span class="req-mark">*</span></label>
-            <input type="number" name="age" required min="16" max="70" placeholder="16-70"/>
+            <input type="number" name="age" required min="16" max="70"/>
           </div>
           <div class="form-row">
             <label class="form-label">Nickname <span class="req-mark">*</span></label>
@@ -225,40 +225,33 @@
           <input type="url" name="steamProfile" required placeholder="https://steamcommunity.com/id/..." pattern="https?://steamcommunity\.com/.+"/>
         </div>
 
-        <div class="form-grid-2">
-          <div class="form-row">
-            <label class="form-label">Hesabında kaç saat CS2 var? <span class="req-mark">*</span></label>
-            <input type="number" name="cs2Hours" required min="0" max="99999" placeholder="Saat cinsinden"/>
-          </div>
-          <div class="form-row" data-rank-for="awp" hidden>
-            <label class="form-label">CS2 rankın <span class="req-mark">*</span></label>
-            <select name="rankAwp" disabled>
-              <option value="">Seç…</option>
-              <option>Silver</option>
-              <option>Gold Nova</option>
-              <option>Master Guardian (MG)</option>
-              <option>Distinguished Master Guardian (DMG)</option>
-              <option>Legendary Eagle (LE)</option>
-              <option>Legendary Eagle Master (LEM)</option>
-              <option>Supreme Master First Class (SMFC)</option>
-              <option>Global Elite</option>
-            </select>
-          </div>
-          <div class="form-row" data-rank-for="score" hidden>
-            <label class="form-label">Sunucudaki puan aralığın <span class="req-mark">*</span></label>
-            <select name="rankScore" disabled>
-              <option value="">Seç…</option>
-              <option>0 - 5.000</option>
-              <option>5.001 - 10.000</option>
-              <option>10.001 - 15.000</option>
-              <option>15.001 - 20.000</option>
-              <option>20.000+</option>
-            </select>
-          </div>
-          <div class="form-row" data-rank-placeholder>
-            <label class="form-label">Rank / Puan <span class="req-mark">*</span></label>
-            <div style="padding:0.65rem 0.8rem;background:rgba(0,0,0,0.2);border:1px dashed rgba(255,255,255,0.12);border-radius:8px;color:var(--text-dim);font-size:0.85rem;">Önce sunucu seç</div>
-          </div>
+        <div class="form-row">
+          <label class="form-label">Hesabında kaç saat CS2 var? <span class="req-mark">*</span></label>
+          <input type="number" name="cs2Hours" required min="0" max="99999" placeholder="Saat cinsinden"/>
+        </div>
+
+        <div class="form-row" id="rankRow">
+          <label class="form-label" id="rankLabel">Rank / Puan Aralığın <span class="req-mark">*</span></label>
+          <div class="form-empty-hint" data-rank-placeholder>Önce hangi sunucu için başvurduğunu seç</div>
+          <select name="rankAwp" data-rank-for="awp" hidden disabled>
+            <option value="">Rankını seç…</option>
+            <option>Silver</option>
+            <option>Gold Nova</option>
+            <option>Master Guardian</option>
+            <option>Distinguished Master Guardian</option>
+            <option>Legendary Eagle</option>
+            <option>Legendary Eagle Master</option>
+            <option>Supreme Master First Class</option>
+            <option>Global Elite</option>
+          </select>
+          <select name="rankScore" data-rank-for="score" hidden disabled>
+            <option value="">Puan aralığını seç…</option>
+            <option>0 - 5.000</option>
+            <option>5.001 - 10.000</option>
+            <option>10.001 - 15.000</option>
+            <option>15.001 - 20.000</option>
+            <option>20.000+</option>
+          </select>
         </div>
 
         <div class="form-grid-2">
