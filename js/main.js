@@ -604,6 +604,29 @@ function initYetkiliForm() {
     if (e.key === 'Escape' && modal.classList.contains('open')) closeModal();
   });
 
+  // Server radio değişince rank alanını dinamik değiştir
+  // AWP → CS2 rankları, AIM/Redline → puan aralığı
+  const rankAwp    = form.querySelector('[data-rank-for="awp"]');
+  const rankScore  = form.querySelector('[data-rank-for="score"]');
+  const rankPlaceholder = form.querySelector('[data-rank-placeholder]');
+  const rankAwpSel   = rankAwp?.querySelector('select');
+  const rankScoreSel = rankScore?.querySelector('select');
+
+  function updateRankVisibility(server) {
+    if (!rankAwp || !rankScore || !rankPlaceholder) return;
+    const showAwp = server === 'awp';
+    const showScore = server === 'aim' || server === 'redline';
+    rankAwp.hidden = !showAwp;
+    rankScore.hidden = !showScore;
+    rankPlaceholder.hidden = showAwp || showScore;
+    if (rankAwpSel)   { rankAwpSel.disabled = !showAwp;   if (showAwp)   rankAwpSel.required = true;  else { rankAwpSel.required = false;   rankAwpSel.value = ''; } }
+    if (rankScoreSel) { rankScoreSel.disabled = !showScore; if (showScore) rankScoreSel.required = true; else { rankScoreSel.required = false; rankScoreSel.value = ''; } }
+  }
+
+  form.querySelectorAll('input[name="server"]').forEach(r => {
+    r.addEventListener('change', () => updateRankVisibility(r.value));
+  });
+
   form.addEventListener('submit', async e => {
     e.preventDefault();
     clearError();
@@ -613,10 +636,17 @@ function initYetkiliForm() {
     for (const [k, v] of fd.entries()) payload[k] = typeof v === 'string' ? v.trim() : v;
     payload.rulesRead = form.querySelector('[name="rulesRead"]').checked;
 
+    // Rank normalize: server'a göre doğru select'ten rank'i backend'e "rank" olarak yolla
+    if (payload.server === 'awp') payload.rank = payload.rankAwp || '';
+    else if (payload.server === 'aim' || payload.server === 'redline') payload.rank = payload.rankScore || '';
+    delete payload.rankAwp;
+    delete payload.rankScore;
+
     // Client-side validation
     const age = parseInt(payload.age, 10);
     if (isNaN(age) || age < 16 || age > 70) return showError('Yaş 16-70 arasında olmalı.');
     if (!payload.server) return showError('Bir sunucu seç.');
+    if (!payload.rank) return showError('Rank / puan aralığını seç.');
     if (!payload.rulesRead) return showError('Kuralları okuduğunu kabul etmen gerek.');
     const activeMin = parseInt(payload.activeMin, 10);
     const activeMax = parseInt(payload.activeMax, 10);
