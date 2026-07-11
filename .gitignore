@@ -6,3 +6,7 @@ package-lock.json
 .DS_Store
 Thumbs.db
 *.log
+
+# Bot çalışma dosyaları — git'te tutmayalım
+data/bans.lock
+data/bans.json.tmp
