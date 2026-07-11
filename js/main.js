@@ -659,17 +659,74 @@ function initYetkiliForm() {
     delete payload.rankAwp;
     delete payload.rankScore;
 
-    // Client-side validation
+    // Sıralı validation: eksik olan ilk alanı bul, o alana odaklan, spesifik mesaj göster
+    const REQUIRED_FIELDS = [
+      { key: 'server',       label: 'Hangi sunucu için başvuruyorsun' },
+      { key: 'name',         label: 'İsim' },
+      { key: 'age',          label: 'Yaş' },
+      { key: 'nickname',     label: 'Nickname' },
+      { key: 'steamProfile', label: 'Steam profil linki' },
+      { key: 'cs2Hours',     label: 'CS2 saati' },
+      { key: 'rank',         label: 'Rank / Puan aralığı' },
+      { key: 'twKnow',       label: 'TeamViewer bakma durumu' },
+      { key: 'prime',        label: 'Prime hesap durumu' },
+      { key: 'activeMin',    label: 'Günlük aktif — en az saat' },
+      { key: 'activeMax',    label: 'Günlük aktif — en çok saat' },
+      { key: 'schedule',     label: 'Okul/iş programı' },
+      { key: 'mic',          label: 'Mikrofon durumu' },
+      { key: 'beenAdmin',    label: 'Daha önce yetkili oldun mu' },
+      { key: 'commands',     label: 'Yetkili komutları' },
+    ];
+
+    const focusField = key => {
+      let el;
+      if (key === 'rank') {
+        el = payload.server === 'awp'
+          ? form.querySelector('select[data-rank-for="awp"]')
+          : form.querySelector('select[data-rank-for="score"]');
+      } else {
+        el = form.querySelector(`[name="${key}"]`);
+      }
+      if (el && typeof el.focus === 'function') {
+        try { el.focus({ preventScroll: false }); } catch (_) { el.focus(); }
+        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    };
+
+    // 1) Boş / eksik alan var mı?
+    for (const f of REQUIRED_FIELDS) {
+      const v = payload[f.key];
+      if (v === undefined || v === null || String(v).trim() === '') {
+        focusField(f.key);
+        return showError(`Lütfen "${f.label}" alanını doldur.`);
+      }
+    }
+
+    // 2) Yaş aralığı
     const age = parseInt(payload.age, 10);
-    if (isNaN(age) || age < 16 || age > 70) return showError('Yaş 16-70 arasında olmalı.');
-    if (!payload.server) return showError('Bir sunucu seç.');
-    if (!payload.rank) return showError('Rank / puan aralığını seç.');
-    if (!payload.rulesRead) return showError('Kuralları okuduğunu kabul etmen gerek.');
+    if (isNaN(age) || age < 16 || age > 70) {
+      focusField('age');
+      return showError('Yaş 16 ile 70 arasında olmalı.');
+    }
+
+    // 3) Steam URL formatı
+    if (!/^https?:\/\/steamcommunity\.com\//.test(payload.steamProfile)) {
+      focusField('steamProfile');
+      return showError('Geçerli bir Steam profil linki gir (steamcommunity.com/...).');
+    }
+
+    // 4) Aktif saat min/max mantığı
     const activeMin = parseInt(payload.activeMin, 10);
     const activeMax = parseInt(payload.activeMax, 10);
-    if (activeMin > activeMax) return showError('En az saat, en çok saatten büyük olamaz.');
-    if (!/^https?:\/\/steamcommunity\.com\//.test(payload.steamProfile)) {
-      return showError('Geçerli bir Steam profil linki gir.');
+    if (activeMin > activeMax) {
+      focusField('activeMax');
+      return showError('"En az" saat, "en çok" saatten büyük olamaz.');
+    }
+
+    // 5) Kural kabul
+    if (!payload.rulesRead) {
+      form.querySelector('[name="rulesRead"]')?.focus();
+      return showError('Kuralları okuduğunu kabul etmen gerek.');
     }
 
     // UI: loading
