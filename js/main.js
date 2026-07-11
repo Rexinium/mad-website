@@ -15,24 +15,8 @@ const safeType   = t => ALLOWED_BAN_TYPES.has(t) ? t : 'ban';
 const safeServer = s => ALLOWED_SERVERS.has(s)   ? s : '';
 const safeDurCls = c => ALLOWED_DUR_CLASS.has(c) ? c : 'perm';
 
-/* === LAVA PARTICLES === */
-function initLavaParticles() {
-  const bg = document.querySelector('.lava-bg');
-  if (!bg) return;
-  for (let i = 0; i < 6; i++) {
-    const p = document.createElement('div');
-    p.className = 'lava-particle';
-    const size = 200 + Math.random() * 300;
-    p.style.cssText = `
-      width:${size}px; height:${size}px;
-      left:${Math.random()*100}%; top:${Math.random()*100}%;
-      --dur:${6 + Math.random()*8}s;
-      --delay:${Math.random()*6}s;
-      transform:translate(-50%,-50%);
-    `;
-    bg.appendChild(p);
-  }
-}
+/* === LAVA PARTICLES === (performans için no-op'a alındı) */
+function initLavaParticles() { /* devre dışı — arka plan statik gradient */ }
 
 /* === NAVBAR BURGER === */
 function initBurger() {

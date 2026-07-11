@@ -188,130 +188,162 @@
     <div class="form-modal-inner" role="dialog" aria-labelledby="yetkiliFormTitle">
       <button class="form-modal-close" data-close-form aria-label="Kapat">✕</button>
       <div class="form-modal-header">
-        <div class="form-modal-title" id="yetkiliFormTitle">🇹🇷 MAD? Yetkili Başvuru Formu</div>
-        <div class="form-modal-sub">Tüm alanlar zorunludur. Gönderim sonrası Discord'daki başvuru kanalına düşer.</div>
+        <div class="form-modal-title" id="yetkiliFormTitle">Yetkili Başvurusu</div>
+        <div class="form-modal-sub">Tüm alanlar zorunlu. Gönderim sonrası Discord başvuru kanalına düşer.</div>
       </div>
 
       <form id="yetkiliForm" class="form-body" novalidate>
-        <!-- Honeypot (botlar için görünmez) -->
         <input type="text" name="website" tabindex="-1" autocomplete="off" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0" aria-hidden="true"/>
 
-        <div class="form-row">
-          <label class="form-label">Hangi sunucu için başvuruyorsun? <span class="req-mark">*</span></label>
-          <div class="form-radio-group">
-            <label class="form-radio"><input type="radio" name="server" value="awp" required><span>AWP Lego</span></label>
-            <label class="form-radio"><input type="radio" name="server" value="aim"><span>AIM Pistol</span></label>
-            <label class="form-radio"><input type="radio" name="server" value="redline"><span>AIM Redline</span></label>
-          </div>
-        </div>
-
-        <div class="form-grid-3">
+        <!-- Bölüm 1: Sunucu -->
+        <section class="form-section">
+          <header class="form-section-head">
+            <span class="form-section-num">01</span>
+            <span class="form-section-title">Sunucu Seçimi</span>
+          </header>
           <div class="form-row">
-            <label class="form-label">İsim <span class="req-mark">*</span></label>
-            <input type="text" name="name" required maxlength="60" autocomplete="off"/>
+            <div class="form-server-pick">
+              <label class="form-server-opt"><input type="radio" name="server" value="awp" required><span class="fs-name">AWP Lego</span><span class="fs-tag">AWP Only</span></label>
+              <label class="form-server-opt"><input type="radio" name="server" value="aim"><span class="fs-name">AIM Pistol</span><span class="fs-tag">Pistol Only</span></label>
+              <label class="form-server-opt"><input type="radio" name="server" value="redline"><span class="fs-name">AIM Redline</span><span class="fs-tag">Headshot</span></label>
+            </div>
           </div>
-          <div class="form-row">
-            <label class="form-label">Yaş <span class="req-mark">*</span></label>
-            <input type="number" name="age" required min="16" max="70"/>
-          </div>
-          <div class="form-row">
-            <label class="form-label">Nickname <span class="req-mark">*</span></label>
-            <input type="text" name="nickname" required maxlength="40" autocomplete="off"/>
-          </div>
-        </div>
+        </section>
 
-        <div class="form-row">
-          <label class="form-label">Steam profil linki <span class="req-mark">*</span></label>
-          <input type="url" name="steamProfile" required placeholder="https://steamcommunity.com/id/..." pattern="https?://steamcommunity\.com/.+"/>
-        </div>
-
-        <div class="form-row">
-          <label class="form-label">Hesabında kaç saat CS2 var? <span class="req-mark">*</span></label>
-          <input type="number" name="cs2Hours" required min="0" max="99999" placeholder="Saat cinsinden"/>
-        </div>
-
-        <div class="form-row" id="rankRow">
-          <label class="form-label" id="rankLabel">Rank / Puan Aralığın <span class="req-mark">*</span></label>
-          <div class="form-empty-hint" data-rank-placeholder>Önce hangi sunucu için başvurduğunu seç</div>
-          <select name="rankAwp" data-rank-for="awp" hidden disabled>
-            <option value="">Rankını seç…</option>
-            <option>Silver</option>
-            <option>Gold Nova</option>
-            <option>Master Guardian</option>
-            <option>Distinguished Master Guardian</option>
-            <option>Legendary Eagle</option>
-            <option>Legendary Eagle Master</option>
-            <option>Supreme Master First Class</option>
-            <option>Global Elite</option>
-          </select>
-          <select name="rankScore" data-rank-for="score" hidden disabled>
-            <option value="">Puan aralığını seç…</option>
-            <option>0 - 5.000</option>
-            <option>5.001 - 10.000</option>
-            <option>10.001 - 15.000</option>
-            <option>15.001 - 20.000</option>
-            <option>20.000+</option>
-          </select>
-        </div>
-
-        <div class="form-grid-2">
-          <div class="form-row">
-            <label class="form-label">TeamViewer bakmayı biliyor musun? <span class="req-mark">*</span></label>
-            <div class="form-radio-group">
-              <label class="form-radio"><input type="radio" name="twKnow" value="Evet" required><span>Evet</span></label>
-              <label class="form-radio"><input type="radio" name="twKnow" value="Hayır"><span>Hayır</span></label>
+        <!-- Bölüm 2: Kimlik -->
+        <section class="form-section">
+          <header class="form-section-head">
+            <span class="form-section-num">02</span>
+            <span class="form-section-title">Kimlik Bilgileri</span>
+          </header>
+          <div class="form-grid-3">
+            <div class="form-row">
+              <label class="form-label">İsim</label>
+              <input type="text" name="name" required maxlength="60" autocomplete="off"/>
+            </div>
+            <div class="form-row">
+              <label class="form-label">Yaş</label>
+              <input type="number" name="age" required min="16" max="70"/>
+            </div>
+            <div class="form-row">
+              <label class="form-label">Nickname</label>
+              <input type="text" name="nickname" required maxlength="40" autocomplete="off"/>
             </div>
           </div>
           <div class="form-row">
-            <label class="form-label">Hesabın Prime (seçkin) mi? <span class="req-mark">*</span></label>
-            <div class="form-radio-group">
-              <label class="form-radio"><input type="radio" name="prime" value="Seçkin" required><span>Seçkin</span></label>
-              <label class="form-radio"><input type="radio" name="prime" value="Seçkin değil"><span>Seçkin değil</span></label>
+            <label class="form-label">Steam Profil Linki</label>
+            <input type="url" name="steamProfile" required placeholder="https://steamcommunity.com/id/..." pattern="https?://steamcommunity\.com/.+"/>
+          </div>
+        </section>
+
+        <!-- Bölüm 3: Oyun Bilgileri -->
+        <section class="form-section">
+          <header class="form-section-head">
+            <span class="form-section-num">03</span>
+            <span class="form-section-title">Oyun Bilgileri</span>
+          </header>
+          <div class="form-grid-2">
+            <div class="form-row">
+              <label class="form-label">CS2 Süresi (saat)</label>
+              <input type="number" name="cs2Hours" required min="0" max="99999" placeholder="Örn: 1500"/>
+            </div>
+            <div class="form-row" id="rankRow">
+              <label class="form-label" id="rankLabel">Rank / Puan Aralığın</label>
+              <div class="form-empty-hint" data-rank-placeholder>Önce sunucu seç</div>
+              <select name="rankAwp" data-rank-for="awp" hidden disabled>
+                <option value="">Rankını seç…</option>
+                <option>Silver</option>
+                <option>Gold Nova</option>
+                <option>Master Guardian</option>
+                <option>Distinguished Master Guardian</option>
+                <option>Legendary Eagle</option>
+                <option>Legendary Eagle Master</option>
+                <option>Supreme Master First Class</option>
+                <option>Global Elite</option>
+              </select>
+              <select name="rankScore" data-rank-for="score" hidden disabled>
+                <option value="">Puan aralığını seç…</option>
+                <option>0 - 5.000</option>
+                <option>5.001 - 10.000</option>
+                <option>10.001 - 15.000</option>
+                <option>15.001 - 20.000</option>
+                <option>20.000+</option>
+              </select>
             </div>
           </div>
-        </div>
-
-        <div class="form-row">
-          <label class="form-label">Günlük kaç saat sunucuda aktif olabilirsin? <span class="req-mark">*</span></label>
-          <div class="form-inline-two">
-            <input type="number" name="activeMin" required min="0" max="24" placeholder="En az"/>
-            <span class="form-inline-sep">–</span>
-            <input type="number" name="activeMax" required min="0" max="24" placeholder="En çok"/>
-            <span class="form-inline-suffix">saat / gün</span>
+          <div class="form-grid-2">
+            <div class="form-row">
+              <label class="form-label">Prime Hesap</label>
+              <div class="form-radio-group">
+                <label class="form-radio"><input type="radio" name="prime" value="Seçkin" required><span>Seçkin</span></label>
+                <label class="form-radio"><input type="radio" name="prime" value="Seçkin değil"><span>Değil</span></label>
+              </div>
+            </div>
+            <div class="form-row">
+              <label class="form-label">Mikrofonun</label>
+              <div class="form-radio-group">
+                <label class="form-radio"><input type="radio" name="mic" value="Evet" required><span>Var</span></label>
+                <label class="form-radio"><input type="radio" name="mic" value="Hayır"><span>Yok</span></label>
+              </div>
+            </div>
           </div>
-        </div>
+        </section>
 
-        <div class="form-row">
-          <label class="form-label">Okul/iş zamanında sunucuya giriş sağlayabilir misin? <span class="req-mark">*</span></label>
-          <textarea name="schedule" required maxlength="300" rows="2" placeholder="Örn: okuldan sonra 4-8 arası, hafta sonu tam gün"></textarea>
-        </div>
-
-        <div class="form-grid-2">
+        <!-- Bölüm 4: Uygunluk -->
+        <section class="form-section">
+          <header class="form-section-head">
+            <span class="form-section-num">04</span>
+            <span class="form-section-title">Uygunluk & Aktiflik</span>
+          </header>
           <div class="form-row">
-            <label class="form-label">Mikrofonun var mı? <span class="req-mark">*</span></label>
-            <div class="form-radio-group">
-              <label class="form-radio"><input type="radio" name="mic" value="Evet" required><span>Evet</span></label>
-              <label class="form-radio"><input type="radio" name="mic" value="Hayır"><span>Hayır</span></label>
+            <label class="form-label">Günlük aktif olabileceğin saat aralığı</label>
+            <div class="form-inline-two">
+              <input type="number" name="activeMin" required min="0" max="24" placeholder="En az"/>
+              <span class="form-inline-sep">–</span>
+              <input type="number" name="activeMax" required min="0" max="24" placeholder="En çok"/>
+              <span class="form-inline-suffix">saat / gün</span>
             </div>
           </div>
           <div class="form-row">
-            <label class="form-label">Daha önce bir sunucuda yetkili oldun mu? <span class="req-mark">*</span></label>
-            <div class="form-radio-group">
-              <label class="form-radio"><input type="radio" name="beenAdmin" value="Evet" required><span>Evet</span></label>
-              <label class="form-radio"><input type="radio" name="beenAdmin" value="Hayır"><span>Hayır</span></label>
+            <label class="form-label">Okul/iş zamanında giriş programın</label>
+            <textarea name="schedule" required maxlength="300" rows="2" placeholder="Örn: okuldan sonra 4-8 arası, hafta sonu tam gün"></textarea>
+          </div>
+        </section>
+
+        <!-- Bölüm 5: Deneyim -->
+        <section class="form-section">
+          <header class="form-section-head">
+            <span class="form-section-num">05</span>
+            <span class="form-section-title">Deneyim</span>
+          </header>
+          <div class="form-grid-2">
+            <div class="form-row">
+              <label class="form-label">TeamViewer bakma</label>
+              <div class="form-radio-group">
+                <label class="form-radio"><input type="radio" name="twKnow" value="Evet" required><span>Biliyorum</span></label>
+                <label class="form-radio"><input type="radio" name="twKnow" value="Hayır"><span>Bilmiyorum</span></label>
+              </div>
+            </div>
+            <div class="form-row">
+              <label class="form-label">Daha önce yetkili oldun mu?</label>
+              <div class="form-radio-group">
+                <label class="form-radio"><input type="radio" name="beenAdmin" value="Evet" required><span>Evet</span></label>
+                <label class="form-radio"><input type="radio" name="beenAdmin" value="Hayır"><span>Hayır</span></label>
+              </div>
             </div>
           </div>
-        </div>
+          <div class="form-row">
+            <label class="form-label">Yetkili komutlarına hakimiyet</label>
+            <textarea name="commands" required maxlength="500" rows="3" placeholder="Örn: sm_ban, sm_kick, sm_gag, sm_mute kullanabilirim..."></textarea>
+          </div>
+        </section>
 
-        <div class="form-row">
-          <label class="form-label">Yetkili komutlarına hakim misin? Kısaca anlat: <span class="req-mark">*</span></label>
-          <textarea name="commands" required maxlength="500" rows="3" placeholder="Örn: sm_ban, sm_kick, sm_gag, sm_mute kullanabilirim..."></textarea>
-        </div>
-
-        <div class="form-row form-check-row">
+        <!-- Onay -->
+        <div class="form-consent">
           <label class="form-check">
             <input type="checkbox" name="rulesRead" required/>
-            <span><a href="/kurallar" target="_blank" rel="noopener noreferrer">Kuralları</a> okudum ve kabul ediyorum <span class="req-mark">*</span></span>
+            <span class="form-check-visual"></span>
+            <span><a href="/kurallar" target="_blank" rel="noopener noreferrer">Kuralları</a> okudum ve kabul ediyorum</span>
           </label>
         </div>
 
