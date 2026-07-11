@@ -203,9 +203,9 @@
           </header>
           <div class="form-row">
             <div class="form-server-pick">
-              <label class="form-server-opt"><input type="radio" name="server" value="awp" required><span class="fs-name">AWP Lego</span><span class="fs-tag">AWP Only</span></label>
-              <label class="form-server-opt"><input type="radio" name="server" value="aim"><span class="fs-name">AIM Pistol</span><span class="fs-tag">Pistol Only</span></label>
-              <label class="form-server-opt"><input type="radio" name="server" value="redline"><span class="fs-name">AIM Redline</span><span class="fs-tag">Headshot</span></label>
+              <label class="form-server-opt"><input type="radio" name="server" value="awp" required><span class="fs-name">AWP Lego</span></label>
+              <label class="form-server-opt"><input type="radio" name="server" value="aim"><span class="fs-name">AIM Pistol</span></label>
+              <label class="form-server-opt"><input type="radio" name="server" value="redline"><span class="fs-name">AIM Redline</span></label>
             </div>
           </div>
         </section>
@@ -263,11 +263,11 @@
               </select>
               <select name="rankScore" data-rank-for="score" hidden disabled>
                 <option value="">Puan aralığını seç…</option>
-                <option>0 - 5.000</option>
-                <option>5.001 - 10.000</option>
-                <option>10.001 - 15.000</option>
-                <option>15.001 - 20.000</option>
-                <option>20.000+</option>
+                <option>5.000 - 10.000</option>
+                <option>10.000 - 15.000</option>
+                <option>15.000 - 25.000</option>
+                <option>25.000 - 40.000</option>
+                <option>40.000+</option>
               </select>
             </div>
           </div>
@@ -276,7 +276,7 @@
               <label class="form-label">Prime Hesap</label>
               <div class="form-radio-group">
                 <label class="form-radio"><input type="radio" name="prime" value="Seçkin" required><span>Seçkin</span></label>
-                <label class="form-radio"><input type="radio" name="prime" value="Seçkin değil"><span>Değil</span></label>
+                <label class="form-radio"><input type="radio" name="prime" value="Seçkin değil"><span>Seçkin değil</span></label>
               </div>
             </div>
             <div class="form-row">
@@ -301,7 +301,6 @@
               <input type="number" name="activeMin" required min="0" max="24" placeholder="En az"/>
               <span class="form-inline-sep">–</span>
               <input type="number" name="activeMax" required min="0" max="24" placeholder="En çok"/>
-              <span class="form-inline-suffix">saat / gün</span>
             </div>
           </div>
           <div class="form-row">
@@ -318,7 +317,7 @@
           </header>
           <div class="form-grid-2">
             <div class="form-row">
-              <label class="form-label">TeamViewer bakma</label>
+              <label class="form-label">TeamViewer bakmayı biliyor musunuz?</label>
               <div class="form-radio-group">
                 <label class="form-radio"><input type="radio" name="twKnow" value="Evet" required><span>Biliyorum</span></label>
                 <label class="form-radio"><input type="radio" name="twKnow" value="Hayır"><span>Bilmiyorum</span></label>

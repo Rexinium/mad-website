@@ -2331,6 +2331,12 @@ body {
   background-position: right 1rem center;
   padding-right: 2.5rem;
   cursor: pointer;
+  color-scheme: dark;
+}
+.form-body select option {
+  background: #14100e;
+  color: #fff;
+  padding: 0.4rem;
 }
 /* Global: hidden attribute'u tüm layout'larda gizler (flex/grid içinde bile) */
 .form-body [hidden] { display: none !important; }

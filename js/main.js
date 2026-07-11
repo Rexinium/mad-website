@@ -797,7 +797,7 @@ function initAdminModal() {
         <div class="admin-contact-icon steam">${STEAM_ICON}</div>
         <div class="admin-contact-body">
           <div class="admin-contact-label">Steam</div>
-          <div class="admin-contact-value">Profili aç →</div>
+          <div class="admin-contact-value">Bağlantıyı aç →</div>
         </div>
       </a>
       <div class="admin-contact-row">
