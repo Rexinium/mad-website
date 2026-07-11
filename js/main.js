@@ -766,6 +766,102 @@ function initBanSearchTrigger() {
   btn.addEventListener('click', () => input.dispatchEvent(new Event('input')));
 }
 
+/* === YÖNETİCİ PROFİL MODAL ===
+   Yönetici kartına tıklanınca Steam + Discord iletişim bilgilerini gösterir. */
+const ADMIN_CONTACTS = {
+  thomas:        { steam: 'https://steamcommunity.com/id/Awp_User/',            discord: 'Rexinium' },
+  oflaz:         { steam: 'https://steamcommunity.com/profiles/76561198272302463/', discord: 'oflazzz' },
+  hoid:          { steam: 'https://steamcommunity.com/id/Hoid20/',             discord: 'n4cr0n' },
+  neyzenim:      { steam: 'https://steamcommunity.com/profiles/76561199832334054/', discord: 'neyzeni29' },
+  chrysanthemum: { steam: 'https://steamcommunity.com/id/Xckax/',              discord: 'xckax' },
+};
+
+const STEAM_ICON = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-.5 5.5l3 5.5-3 1.5c-.28.14-.6.21-.94.21-1.24 0-2.24-1-2.24-2.24 0-.34.07-.66.21-.94l-2-4 4.97-.03z"/><circle cx="15.5" cy="8.5" r="2.5" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>';
+const DISCORD_ICON = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.79 19.79 0 00-4.885-1.515.074.074 0 00-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 00-5.487 0 12.64 12.64 0 00-.617-1.25.077.077 0 00-.079-.037A19.74 19.74 0 003.677 4.37a.07.07 0 00-.032.027C.533 9.046-.32 13.58.099 18.058a.082.082 0 00.031.056 19.9 19.9 0 005.993 3.03.078.078 0 00.084-.027c.462-.63.874-1.295 1.226-1.994.021-.041.001-.09-.041-.106a13.11 13.11 0 01-1.872-.892.077.077 0 01-.008-.128 10.2 10.2 0 00.372-.292.074.074 0 01.077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 01.078.01c.12.098.246.198.373.292a.077.077 0 01-.006.127 12.3 12.3 0 01-1.873.892.077.077 0 00-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 00.084.028 19.84 19.84 0 006.002-3.03.077.077 0 00.032-.054c.5-5.177-.838-9.674-3.549-13.66a.06.06 0 00-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.42 0-1.332.956-2.42 2.157-2.42 1.21 0 2.176 1.096 2.157 2.42 0 1.334-.955 2.42-2.157 2.42zm7.975 0c-1.183 0-2.157-1.085-2.157-2.42 0-1.332.955-2.42 2.157-2.42 1.21 0 2.176 1.096 2.157 2.42 0 1.334-.947 2.42-2.157 2.42z"/></svg>';
+
+function initAdminModal() {
+  const modal = document.getElementById('adminModal');
+  if (!modal) return;
+
+  const avatar = document.getElementById('adminModalAvatar');
+  const nameEl = document.getElementById('adminModalName');
+  const roleEl = document.getElementById('adminModalRole');
+  const contactsEl = document.getElementById('adminModalContacts');
+
+  const openModal = card => {
+    const adminKey = card.dataset.admin;
+    const contact = ADMIN_CONTACTS[adminKey];
+    if (!contact) return;
+
+    // Kart içeriğinden avatar + isim + rol al
+    const img = card.querySelector('.admin-avatar img');
+    const name = card.querySelector('.admin-name')?.textContent.trim() || '';
+    const roleClone = card.querySelector('.admin-role')?.cloneNode(true);
+
+    avatar.innerHTML = '';
+    if (img) {
+      const clone = img.cloneNode(true);
+      clone.removeAttribute('data-fallback');
+      avatar.appendChild(clone);
+    }
+    nameEl.textContent = name;
+    roleEl.innerHTML = '';
+    if (roleClone) roleEl.appendChild(roleClone);
+
+    contactsEl.innerHTML = `
+      <a class="admin-contact-row" href="${esc(contact.steam)}" target="_blank" rel="noopener noreferrer" style="text-decoration:none">
+        <div class="admin-contact-icon steam">${STEAM_ICON}</div>
+        <div class="admin-contact-body">
+          <div class="admin-contact-label">Steam</div>
+          <div class="admin-contact-value">Profili aç →</div>
+        </div>
+      </a>
+      <div class="admin-contact-row">
+        <div class="admin-contact-icon discord">${DISCORD_ICON}</div>
+        <div class="admin-contact-body">
+          <div class="admin-contact-label">Discord</div>
+          <div class="admin-contact-value">${esc(contact.discord)}</div>
+        </div>
+        <button class="admin-contact-btn" type="button" data-copy-discord="${esc(contact.discord)}">Kopyala</button>
+      </div>
+    `;
+
+    modal.classList.add('open');
+    modal.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+  };
+
+  const closeModal = () => {
+    modal.classList.remove('open');
+    modal.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+  };
+
+  // Yönetici kartlarına click listener
+  document.querySelectorAll('.admin-card[data-admin]').forEach(card => {
+    card.addEventListener('click', () => openModal(card));
+  });
+
+  // Kapat handler'ları
+  modal.querySelectorAll('[data-close-admin]').forEach(el => {
+    el.addEventListener('click', closeModal);
+  });
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && modal.classList.contains('open')) closeModal();
+  });
+
+  // Discord kopyala
+  contactsEl.addEventListener('click', e => {
+    const btn = e.target.closest('[data-copy-discord]');
+    if (!btn) return;
+    const val = btn.dataset.copyDiscord;
+    copyText(val, btn);
+    btn.textContent = 'Kopyalandı ✓';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'Kopyala'; btn.classList.remove('copied'); }, 1600);
+  });
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   initLavaParticles();
   initBurger();
@@ -785,4 +881,5 @@ document.addEventListener('DOMContentLoaded', () => {
   initDiscordWidget();
   initServerPopulate();
   initYetkiliForm();
+  initAdminModal();
 });
