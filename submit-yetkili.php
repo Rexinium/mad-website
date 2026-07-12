@@ -5,11 +5,17 @@
  * Webhook URL'leri /etc/mad/webhooks.php'den okunur (web root DIŞINDA, chmod 640).
  * Bu dosya web root'unda ama sadece nginx location bloğuyla çalışabilir. */
 
-// ---- CORS + method ----
-header('Access-Control-Allow-Origin: *');
+// ---- CORS + method (sadece kendi domain'imiz) ----
+$ALLOWED_ORIGINS = ['https://madcs2.com', 'https://www.madcs2.com'];
+$origin = $_SERVER['HTTP_ORIGIN'] ?? '';
+if (in_array($origin, $ALLOWED_ORIGINS, true)) {
+    header('Access-Control-Allow-Origin: ' . $origin);
+    header('Vary: Origin');
+}
 header('Access-Control-Allow-Methods: POST, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type');
 header('Content-Type: application/json; charset=utf-8');
+header('X-Content-Type-Options: nosniff');
 
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') { http_response_code(204); exit; }
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
