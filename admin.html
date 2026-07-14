@@ -45,12 +45,39 @@
     button:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
     button.ghost { background: rgba(255,255,255,0.06); }
     button.ghost:hover { background: rgba(255,255,255,0.12); box-shadow: none; }
-    .status {
-      margin-top: 1.2rem; padding: 0.8rem; border-radius: 8px;
-      font-size: 0.9rem; display: flex; align-items: center; gap: 0.6rem;
+    .server-row {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0.8rem 1rem;
+      background: rgba(0,0,0,0.35);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 10px;
+      margin-bottom: 0.6rem;
+      transition: border-color 0.15s;
     }
-    .status.open { background: rgba(30,180,80,0.12); border: 1px solid rgba(30,180,80,0.35); color: #7be89a; }
-    .status.closed { background: rgba(255,58,26,0.12); border: 1px solid rgba(255,58,26,0.35); color: #ff8a70; }
+    .server-row.on { border-color: rgba(30,180,80,0.4); background: rgba(30,180,80,0.06); }
+    .server-row.off { border-color: rgba(255,58,26,0.35); background: rgba(255,58,26,0.05); }
+    .server-info { display: flex; align-items: center; gap: 0.7rem; }
+    .server-name { font-weight: 600; font-size: 0.95rem; }
+    .server-state {
+      font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px;
+      padding: 0.2rem 0.5rem; border-radius: 4px;
+    }
+    .server-row.on .server-state { color: #7be89a; background: rgba(30,180,80,0.15); }
+    .server-row.off .server-state { color: #ff8a70; background: rgba(255,58,26,0.15); }
+    .toggle-switch {
+      position: relative; width: 46px; height: 26px;
+      background: rgba(255,58,26,0.25); border-radius: 999px;
+      cursor: pointer; transition: background 0.2s;
+      flex-shrink: 0;
+    }
+    .toggle-switch.on { background: rgba(30,180,80,0.5); }
+    .toggle-switch::after {
+      content: ''; position: absolute; top: 3px; left: 3px;
+      width: 20px; height: 20px; background: #fff; border-radius: 50%;
+      transition: transform 0.2s;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.4);
+    }
+    .toggle-switch.on::after { transform: translateX(20px); }
     .dot { width: 10px; height: 10px; border-radius: 50%; background: currentColor; box-shadow: 0 0 8px currentColor; }
     .msg { margin-top: 1rem; padding: 0.7rem; border-radius: 6px; font-size: 0.85rem; }
     .msg.err { background: rgba(255,58,26,0.15); color: #ff8a70; border: 1px solid rgba(255,58,26,0.3); }
@@ -76,16 +103,30 @@
     </div>
 
     <div id="panelView" hidden>
-      <div class="status" id="statusBadge">
-        <span class="dot"></span>
-        <span id="statusText">Yükleniyor…</span>
+      <label>Yetkili Başvurusu — Sunucu Bazlı</label>
+
+      <div class="server-row" id="row-awp">
+        <div class="server-info">
+          <span class="server-name">AWP Lego</span>
+          <span class="server-state">—</span>
+        </div>
+        <div class="toggle-switch" data-key="yetkiliAwp"></div>
       </div>
 
-      <hr/>
-      <label>Yetkili Başvurusu Durumu</label>
-      <div class="row">
-        <button id="openBtn" type="button">🟢 Aç</button>
-        <button id="closeBtn" type="button" class="ghost">🔴 Kapat</button>
+      <div class="server-row" id="row-aim">
+        <div class="server-info">
+          <span class="server-name">AIM Pistol</span>
+          <span class="server-state">—</span>
+        </div>
+        <div class="toggle-switch" data-key="yetkiliAim"></div>
+      </div>
+
+      <div class="server-row" id="row-redline">
+        <div class="server-info">
+          <span class="server-name">AIM Redline</span>
+          <span class="server-state">—</span>
+        </div>
+        <div class="toggle-switch" data-key="yetkiliRedline"></div>
       </div>
 
       <hr/>
@@ -123,16 +164,21 @@
       }
     }
 
+    const SERVERS = [
+      { key: 'yetkiliAwp',     row: 'row-awp' },
+      { key: 'yetkiliAim',     row: 'row-aim' },
+      { key: 'yetkiliRedline', row: 'row-redline' },
+    ];
+
     function renderStatus(cfg) {
-      const badge = $('statusBadge');
-      const text = $('statusText');
-      if (cfg.yetkiliOpen) {
-        badge.className = 'status open';
-        text.textContent = 'Yetkili başvurusu AÇIK';
-      } else {
-        badge.className = 'status closed';
-        text.textContent = 'Yetkili başvurusu KAPALI';
-      }
+      SERVERS.forEach(s => {
+        const on = cfg[s.key] !== false;  // varsayılan açık
+        const row = $(s.row);
+        row.classList.toggle('on', on);
+        row.classList.toggle('off', !on);
+        row.querySelector('.server-state').textContent = on ? 'AÇIK' : 'KAPALI';
+        row.querySelector('.toggle-switch').classList.toggle('on', on);
+      });
       $('cTitle').value = cfg.closedTitle || '';
       $('cMsg').value   = cfg.closedMessage || '';
     }
@@ -153,10 +199,10 @@
       if (!pwd) return;
       $('loginBtn').disabled = true;
       try {
-        // Login için önce mevcut değeri gönderip test edelim (idempotent probe)
+        // Login için idempotent probe — AWP durumunu yeniden yaz, sadece auth doğrula
         const cfg = await loadConfig();
-        // Aynı değeri yollamak = değişiklik yok, sadece auth doğrula
-        await apiToggle('yetkiliOpen', cfg.yetkiliOpen);
+        const probeVal = cfg.yetkiliAwp !== false;
+        await apiToggle('yetkiliAwp', probeVal);
         $('loginView').hidden = true;
         $('panelView').hidden = false;
         renderStatus(cfg);
@@ -169,20 +215,17 @@
 
     $('pwd').addEventListener('keydown', e => { if (e.key === 'Enter') $('loginBtn').click(); });
 
-    $('openBtn').addEventListener('click', async () => {
-      try {
-        const d = await apiToggle('yetkiliOpen', true);
-        renderStatus(d.config);
-        showMsg($('panelMsg'), '✅ Başvurular açıldı', 'ok');
-      } catch (e) { showMsg($('panelMsg'), e.message, 'err'); }
-    });
-
-    $('closeBtn').addEventListener('click', async () => {
-      try {
-        const d = await apiToggle('yetkiliOpen', false);
-        renderStatus(d.config);
-        showMsg($('panelMsg'), '⛔ Başvurular kapatıldı', 'ok');
-      } catch (e) { showMsg($('panelMsg'), e.message, 'err'); }
+    document.querySelectorAll('.toggle-switch').forEach(sw => {
+      sw.addEventListener('click', async () => {
+        const key = sw.dataset.key;
+        const newVal = !sw.classList.contains('on');
+        try {
+          const d = await apiToggle(key, newVal);
+          renderStatus(d.config);
+          const label = sw.closest('.server-row').querySelector('.server-name').textContent;
+          showMsg($('panelMsg'), (newVal ? '🟢 ' : '🔴 ') + label + ' → ' + (newVal ? 'AÇILDI' : 'KAPATILDI'), 'ok');
+        } catch (e) { showMsg($('panelMsg'), e.message, 'err'); }
+      });
     });
 
     $('saveTextBtn').addEventListener('click', async () => {

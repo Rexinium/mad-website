@@ -90,12 +90,15 @@ try {
     }
 
     // Whitelist edilen anahtarlar
-    $ALLOWED_KEYS = ['yetkiliOpen', 'closedTitle', 'closedMessage'];
+    $BOOL_KEYS = ['yetkiliAwp', 'yetkiliAim', 'yetkiliRedline'];
+    $STR_KEYS  = ['closedTitle', 'closedMessage'];
     $key = (string)($body['key'] ?? '');
-    if (!in_array($key, $ALLOWED_KEYS, true)) bail(400, 'invalid key');
+    if (!in_array($key, $BOOL_KEYS, true) && !in_array($key, $STR_KEYS, true)) {
+        bail(400, 'invalid key');
+    }
 
     $value = $body['value'] ?? null;
-    if ($key === 'yetkiliOpen') {
+    if (in_array($key, $BOOL_KEYS, true)) {
         $current[$key] = (bool)$value;
     } else {
         if (!is_string($value)) bail(400, 'value must be string');

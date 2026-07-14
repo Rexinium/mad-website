@@ -90,17 +90,22 @@ if (!empty($body['website'])) {
     exit;
 }
 
-// ---- Config kontrolü: başvurular kapalıysa reddet ----
+// ---- Config kontrolü: seçilen sunucu için başvurular kapalıysa reddet ----
 $configFile = __DIR__ . '/data/site_config.json';
+$SERVER_KEY_MAP = ['awp' => 'yetkiliAwp', 'aim' => 'yetkiliAim', 'redline' => 'yetkiliRedline'];
 if (is_file($configFile)) {
     $cfg = json_decode((string)file_get_contents($configFile), true);
-    if (is_array($cfg) && isset($cfg['yetkiliOpen']) && $cfg['yetkiliOpen'] === false) {
-        http_response_code(403);
-        echo json_encode([
-            'error' => 'applications_closed',
-            'message' => $cfg['closedMessage'] ?? 'Başvurular şu an kapalı',
-        ]);
-        exit;
+    if (is_array($cfg)) {
+        $reqServer = strtolower((string)($body['server'] ?? ''));
+        $srvKey = $SERVER_KEY_MAP[$reqServer] ?? null;
+        if ($srvKey && isset($cfg[$srvKey]) && $cfg[$srvKey] === false) {
+            http_response_code(403);
+            echo json_encode([
+                'error' => 'applications_closed',
+                'message' => $cfg['closedMessage'] ?? 'Bu sunucu için başvurular kapalı',
+            ]);
+            exit;
+        }
     }
 }
 

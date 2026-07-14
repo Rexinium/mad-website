@@ -1,5 +1,7 @@
 {
-  "yetkiliOpen": true,
+  "yetkiliAwp": true,
+  "yetkiliAim": true,
+  "yetkiliRedline": true,
   "closedTitle": "Başvurular şu an kapalı",
   "closedMessage": "Yetkili başvuruları geçici olarak durduruldu. Discord duyurularımızı takip et."
 }

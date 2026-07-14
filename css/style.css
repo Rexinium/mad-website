@@ -2323,6 +2323,24 @@ body {
   background: radial-gradient(circle, #ff3b1a 45%, transparent 50%);
   box-shadow: 0 0 10px rgba(255,60,26,0.6);
 }
+.form-server-opt.server-closed {
+  opacity: 0.4;
+  cursor: not-allowed;
+  pointer-events: none;
+  filter: grayscale(0.6);
+  position: relative;
+}
+.form-server-opt.server-closed::after {
+  content: '⛔ Kapalı';
+  position: absolute;
+  top: 50%; right: 0.9rem;
+  transform: translateY(-50%);
+  font-size: 0.7rem;
+  color: #ff8a70;
+  letter-spacing: 0.5px;
+  font-weight: 700;
+}
+.form-server-opt.server-closed::before { display: none; }
 .form-server-opt .fs-name {
   font-size: 0.92rem;
   font-weight: 700;

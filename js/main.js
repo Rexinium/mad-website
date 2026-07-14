@@ -566,16 +566,21 @@ function initYetkiliForm() {
   const openBtn = document.getElementById('openYetkiliForm');
   if (!modal || !form || !openBtn) return;
 
-  // Config check — kapalıysa butonu disable et
+  // Config check — sunucu bazlı: hepsi kapalıysa buton disabled, bazısı açıksa form'da sadece açık olanları göster
+  const SRV_KEY = { awp: 'yetkiliAwp', aim: 'yetkiliAim', redline: 'yetkiliRedline' };
+  let siteCfg = null;
   fetch('/data/site_config.json?_=' + Date.now(), { cache: 'no-store' })
     .then(r => r.ok ? r.json() : null)
     .then(cfg => {
-      if (cfg && cfg.yetkiliOpen === false) {
+      if (!cfg) return;
+      siteCfg = cfg;
+      const anyOpen = Object.values(SRV_KEY).some(k => cfg[k] !== false);
+      if (!anyOpen) {
+        // Hepsi kapalı — butonu disable et
         openBtn.disabled = true;
         openBtn.classList.add('closed');
         openBtn.innerHTML = '⛔ ' + (cfg.closedTitle || 'Başvurular Kapalı');
         openBtn.title = cfg.closedMessage || '';
-        // Kapalı mesajı req kartlarının altına ekle
         const applySection = openBtn.closest('.apply-section');
         if (applySection && cfg.closedMessage) {
           const notice = document.createElement('div');
@@ -583,9 +588,29 @@ function initYetkiliForm() {
           notice.textContent = cfg.closedMessage;
           openBtn.parentNode.insertBefore(notice, openBtn);
         }
+        return;
       }
+      // Bazısı kapalıysa form radio'larını buna göre ayarla (modal ilk açılışta)
+      applyServerAvailability(cfg);
     })
     .catch(() => {});
+
+  function applyServerAvailability(cfg) {
+    const picks = form.querySelectorAll('.form-server-opt input[type="radio"][name="server"]');
+    picks.forEach(inp => {
+      const key = SRV_KEY[inp.value];
+      const open = !key || cfg[key] !== false;
+      const label = inp.closest('.form-server-opt');
+      if (!open) {
+        inp.disabled = true;
+        inp.checked = false;
+        if (label) label.classList.add('server-closed');
+      } else {
+        inp.disabled = false;
+        if (label) label.classList.remove('server-closed');
+      }
+    });
+  }
 
   const errBox = document.getElementById('yetkiliFormError');
   const submitBtn = document.getElementById('yetkiliFormSubmit');
