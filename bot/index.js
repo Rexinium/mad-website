@@ -214,6 +214,8 @@ async function sendEvents(events) {
       headers: {
         'Content-Type': 'application/json',
         'X-Bot-Token': BOT_API_TOKEN,
+        'User-Agent': 'MAD-BanBridge/1.0 (+https://madcs2.com)',
+        'Accept': 'application/json',
       },
       body,
     });
