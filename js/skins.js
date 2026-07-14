@@ -246,15 +246,46 @@ function openWeaponModal(wname) {
     const rarityName = (s.rarity && s.rarity.name) || 'Common';
     const isActive = selKey === key;
     const safeSrc = escS(safeImg(s.image));
-    html += `<div class="skin-item ${isActive ? 'active' : ''}" data-key="${escS(key)}" data-img="${safeSrc}" data-name="${escS(s.name)}" data-rarity="${escS(rarityName)}" style="--rc:${color}">
+    // paint_index sadece sayı olmalı (!ws komutu için)
+    const paintIdx = /^\d+$/.test(String(s.paint_index || '')) ? s.paint_index : '';
+    const wsBtn = paintIdx
+      ? `<button type="button" class="skin-item-ws" data-ws="${paintIdx}" title="!ws ${paintIdx} kodunu kopyala">📋 !ws ${paintIdx}</button>`
+      : '';
+    html += `<div class="skin-item ${isActive ? 'active' : ''}" data-key="${escS(key)}" data-img="${safeSrc}" data-name="${escS(s.name)}" data-rarity="${escS(rarityName)}" data-paint="${paintIdx}" style="--rc:${color}">
       <div class="skin-item-img"><img loading="lazy" src="${safeSrc}" alt="${escS(s.name)}"></div>
       <div class="skin-item-name">${escS(s.name)}</div>
       <div class="skin-item-rarity"><span class="rarity-dot"></span>${escS(rarityName)}</div>
+      ${wsBtn}
     </div>`;
   });
   html += '</div>';
   body.innerHTML = html;
   body.scrollTop = 0;
+
+  /* !ws kod kopyala butonu — skin seçim tıklamasını bloklar */
+  body.querySelectorAll('.skin-item-ws').forEach(btn => {
+    btn.addEventListener('click', async (e) => {
+      e.stopPropagation();
+      const paintIdx = btn.dataset.ws;
+      if (!paintIdx) return;
+      const cmd = '!ws ' + paintIdx;
+      try {
+        await navigator.clipboard.writeText(cmd);
+        if (window.showToast) window.showToast('Kopyalandı: ' + cmd, 'check');
+      } catch (err) {
+        // Fallback: eski tarayıcılar için
+        const ta = document.createElement('textarea');
+        ta.value = cmd;
+        ta.style.position = 'fixed';
+        ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.select();
+        try { document.execCommand('copy'); if (window.showToast) window.showToast('Kopyalandı: ' + cmd, 'check'); }
+        catch (e2) { if (window.showToast) window.showToast('Kopyalama başarısız', 'error'); }
+        document.body.removeChild(ta);
+      }
+    });
+  });
 
   /* Skin tıklama: seç / kaldır */
   body.querySelectorAll('.skin-item').forEach(item => {

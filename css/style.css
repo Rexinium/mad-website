@@ -1471,6 +1471,32 @@ body {
   box-shadow: 0 0 6px var(--rc, #888);
 }
 
+/* !ws kopyala butonu */
+.skin-item-ws {
+  margin-top: 0.5rem;
+  width: 100%;
+  padding: 0.4rem 0.5rem;
+  background: rgba(255,58,26,0.08);
+  border: 1px solid rgba(255,58,26,0.28);
+  border-radius: 6px;
+  color: #ffb7a0;
+  font: inherit;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, transform 0.1s;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.skin-item-ws:hover {
+  background: rgba(255,58,26,0.18);
+  border-color: rgba(255,58,26,0.55);
+  color: #fff;
+}
+.skin-item-ws:active { transform: scale(0.96); }
+
 @media (max-width: 700px) {
   .skins-layout { grid-template-columns: 1fr; }
   .skin-sidebar {
