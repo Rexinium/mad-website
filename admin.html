@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="robots" content="noindex, nofollow"/>
+  <title>MAD Admin</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='10' fill='%23150808'/><rect x='6' y='6' width='52' height='52' rx='6' fill='none' stroke='%23ff3b1a' stroke-width='3'/><text x='32' y='42' font-family='Arial Black,sans-serif' font-size='26' font-weight='900' text-anchor='middle' fill='%23ffffff' style='letter-spacing:2px'>MAD</text></svg>"/>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; min-height: 100vh;
+      background: radial-gradient(ellipse at center, #1a0808 0%, #0b0303 60%, #000 100%);
+      color: #f0e6e6; font-family: system-ui, -apple-system, sans-serif;
+      display: flex; align-items: center; justify-content: center; padding: 1rem;
+    }
+    .box {
+      width: 100%; max-width: 460px;
+      background: rgba(20,10,10,0.85);
+      border: 1px solid rgba(255,58,26,0.25);
+      border-radius: 14px; padding: 2rem;
+      box-shadow: 0 8px 40px rgba(255,58,26,0.15);
+      backdrop-filter: blur(8px);
+    }
+    h1 { margin: 0 0 0.4rem; font-size: 1.5rem; color: #ff3b1a; letter-spacing: 1px; }
+    p.hint { margin: 0 0 1.4rem; font-size: 0.85rem; color: #a89898; }
+    label { display: block; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; color: #b89090; margin: 0.8rem 0 0.3rem; }
+    input, textarea {
+      width: 100%; padding: 0.65rem 0.8rem;
+      background: rgba(0,0,0,0.55); border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 8px; color: #f0e6e6; font: inherit; font-size: 0.95rem;
+      outline: none; transition: border 0.15s;
+    }
+    input:focus, textarea:focus { border-color: rgba(255,58,26,0.6); }
+    textarea { resize: vertical; min-height: 60px; }
+    .row { display: flex; gap: 0.6rem; margin-top: 1.2rem; }
+    button {
+      flex: 1; padding: 0.75rem;
+      background: linear-gradient(180deg, #ff3b1a 0%, #d02510 100%);
+      color: #fff; border: none; border-radius: 8px;
+      font-weight: 700; font-size: 0.9rem; letter-spacing: 0.5px; text-transform: uppercase;
+      cursor: pointer; transition: transform 0.1s, box-shadow 0.15s;
+    }
+    button:hover { transform: translateY(-1px); box-shadow: 0 4px 20px rgba(255,58,26,0.4); }
+    button:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+    button.ghost { background: rgba(255,255,255,0.06); }
+    button.ghost:hover { background: rgba(255,255,255,0.12); box-shadow: none; }
+    .status {
+      margin-top: 1.2rem; padding: 0.8rem; border-radius: 8px;
+      font-size: 0.9rem; display: flex; align-items: center; gap: 0.6rem;
+    }
+    .status.open { background: rgba(30,180,80,0.12); border: 1px solid rgba(30,180,80,0.35); color: #7be89a; }
+    .status.closed { background: rgba(255,58,26,0.12); border: 1px solid rgba(255,58,26,0.35); color: #ff8a70; }
+    .dot { width: 10px; height: 10px; border-radius: 50%; background: currentColor; box-shadow: 0 0 8px currentColor; }
+    .msg { margin-top: 1rem; padding: 0.7rem; border-radius: 6px; font-size: 0.85rem; }
+    .msg.err { background: rgba(255,58,26,0.15); color: #ff8a70; border: 1px solid rgba(255,58,26,0.3); }
+    .msg.ok { background: rgba(30,180,80,0.12); color: #7be89a; border: 1px solid rgba(30,180,80,0.3); }
+    .msg[hidden] { display: none; }
+    hr { border: none; border-top: 1px solid rgba(255,255,255,0.06); margin: 1.6rem 0 1rem; }
+    a.back { display: inline-block; margin-top: 1rem; color: #a89898; font-size: 0.8rem; text-decoration: none; }
+    a.back:hover { color: #ff3b1a; }
+  </style>
+</head>
+<body>
+  <div class="box">
+    <h1>🔒 MAD Admin</h1>
+    <p class="hint">Yönetici paneline giriş</p>
+
+    <div id="loginView">
+      <label for="pwd">Şifre</label>
+      <input type="password" id="pwd" autocomplete="current-password" placeholder="••••••••"/>
+      <div class="row">
+        <button id="loginBtn" type="button">Giriş</button>
+      </div>
+      <div class="msg err" id="loginErr" hidden></div>
+    </div>
+
+    <div id="panelView" hidden>
+      <div class="status" id="statusBadge">
+        <span class="dot"></span>
+        <span id="statusText">Yükleniyor…</span>
+      </div>
+
+      <hr/>
+      <label>Yetkili Başvurusu Durumu</label>
+      <div class="row">
+        <button id="openBtn" type="button">🟢 Aç</button>
+        <button id="closeBtn" type="button" class="ghost">🔴 Kapat</button>
+      </div>
+
+      <hr/>
+      <label for="cTitle">Kapalıyken gösterilecek başlık</label>
+      <input type="text" id="cTitle" maxlength="120"/>
+      <label for="cMsg">Kapalıyken gösterilecek mesaj</label>
+      <textarea id="cMsg" maxlength="500" rows="3"></textarea>
+      <div class="row">
+        <button id="saveTextBtn" type="button">💾 Mesajı Kaydet</button>
+      </div>
+
+      <div class="msg" id="panelMsg" hidden></div>
+
+      <a class="back" href="/">← Ana sayfaya dön</a>
+    </div>
+  </div>
+
+  <script>
+    let pwd = '';
+    const $ = id => document.getElementById(id);
+    const showMsg = (el, txt, kind = 'ok') => {
+      el.className = 'msg ' + kind;
+      el.textContent = txt;
+      el.hidden = false;
+      setTimeout(() => { el.hidden = true; }, 4500);
+    };
+
+    async function loadConfig() {
+      try {
+        const r = await fetch('/data/site_config.json?_=' + Date.now(), { cache: 'no-store' });
+        if (!r.ok) throw new Error('config fetch ' + r.status);
+        return await r.json();
+      } catch (e) {
+        return { yetkiliOpen: true, closedTitle: '', closedMessage: '' };
+      }
+    }
+
+    function renderStatus(cfg) {
+      const badge = $('statusBadge');
+      const text = $('statusText');
+      if (cfg.yetkiliOpen) {
+        badge.className = 'status open';
+        text.textContent = 'Yetkili başvurusu AÇIK';
+      } else {
+        badge.className = 'status closed';
+        text.textContent = 'Yetkili başvurusu KAPALI';
+      }
+      $('cTitle').value = cfg.closedTitle || '';
+      $('cMsg').value   = cfg.closedMessage || '';
+    }
+
+    async function apiToggle(key, value) {
+      const r = await fetch('/admin-toggle.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password: pwd, key, value }),
+      });
+      const data = await r.json().catch(() => ({}));
+      if (!r.ok) throw new Error(data.error || 'HTTP ' + r.status);
+      return data;
+    }
+
+    $('loginBtn').addEventListener('click', async () => {
+      pwd = $('pwd').value;
+      if (!pwd) return;
+      $('loginBtn').disabled = true;
+      try {
+        // Login için önce mevcut değeri gönderip test edelim (idempotent probe)
+        const cfg = await loadConfig();
+        // Aynı değeri yollamak = değişiklik yok, sadece auth doğrula
+        await apiToggle('yetkiliOpen', cfg.yetkiliOpen);
+        $('loginView').hidden = true;
+        $('panelView').hidden = false;
+        renderStatus(cfg);
+      } catch (e) {
+        showMsg($('loginErr'), e.message || 'giriş başarısız', 'err');
+      } finally {
+        $('loginBtn').disabled = false;
+      }
+    });
+
+    $('pwd').addEventListener('keydown', e => { if (e.key === 'Enter') $('loginBtn').click(); });
+
+    $('openBtn').addEventListener('click', async () => {
+      try {
+        const d = await apiToggle('yetkiliOpen', true);
+        renderStatus(d.config);
+        showMsg($('panelMsg'), '✅ Başvurular açıldı', 'ok');
+      } catch (e) { showMsg($('panelMsg'), e.message, 'err'); }
+    });
+
+    $('closeBtn').addEventListener('click', async () => {
+      try {
+        const d = await apiToggle('yetkiliOpen', false);
+        renderStatus(d.config);
+        showMsg($('panelMsg'), '⛔ Başvurular kapatıldı', 'ok');
+      } catch (e) { showMsg($('panelMsg'), e.message, 'err'); }
+    });
+
+    $('saveTextBtn').addEventListener('click', async () => {
+      try {
+        await apiToggle('closedTitle', $('cTitle').value);
+        const d = await apiToggle('closedMessage', $('cMsg').value);
+        renderStatus(d.config);
+        showMsg($('panelMsg'), '💾 Mesaj kaydedildi', 'ok');
+      } catch (e) { showMsg($('panelMsg'), e.message, 'err'); }
+    });
+  </script>
+</body>
+</html>

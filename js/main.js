@@ -560,6 +560,27 @@ function initYetkiliForm() {
   const openBtn = document.getElementById('openYetkiliForm');
   if (!modal || !form || !openBtn) return;
 
+  // Config check — kapalıysa butonu disable et
+  fetch('/data/site_config.json?_=' + Date.now(), { cache: 'no-store' })
+    .then(r => r.ok ? r.json() : null)
+    .then(cfg => {
+      if (cfg && cfg.yetkiliOpen === false) {
+        openBtn.disabled = true;
+        openBtn.classList.add('closed');
+        openBtn.innerHTML = '⛔ ' + (cfg.closedTitle || 'Başvurular Kapalı');
+        openBtn.title = cfg.closedMessage || '';
+        // Kapalı mesajı req kartlarının altına ekle
+        const applySection = openBtn.closest('.apply-section');
+        if (applySection && cfg.closedMessage) {
+          const notice = document.createElement('div');
+          notice.className = 'apply-closed-notice';
+          notice.textContent = cfg.closedMessage;
+          openBtn.parentNode.insertBefore(notice, openBtn);
+        }
+      }
+    })
+    .catch(() => {});
+
   const errBox = document.getElementById('yetkiliFormError');
   const submitBtn = document.getElementById('yetkiliFormSubmit');
   const submitText = submitBtn.querySelector('.form-submit-text');

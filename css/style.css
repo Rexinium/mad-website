@@ -2139,6 +2139,23 @@ body {
 .apply-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 26px rgba(255,60,26,0.5); }
 .apply-btn svg { width: 20px; height: 20px; }
 
+.apply-btn.closed {
+  background: linear-gradient(135deg, #4a2020, #6a2a2a);
+  cursor: not-allowed;
+  opacity: 0.75;
+  box-shadow: none;
+}
+.apply-btn.closed:hover { transform: none; box-shadow: none; }
+.apply-closed-notice {
+  max-width: 640px; margin: 0 auto 1.2rem;
+  padding: 1rem 1.3rem;
+  background: rgba(255,58,26,0.08);
+  border: 1px solid rgba(255,58,26,0.28);
+  border-radius: 10px;
+  color: #ffb7a0; font-size: 0.95rem; line-height: 1.5;
+  text-align: center;
+}
+
 /* === FORM MODAL === */
 .form-modal {
   position: fixed; inset: 0; z-index: 1000;

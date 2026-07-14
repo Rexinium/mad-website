@@ -90,6 +90,20 @@ if (!empty($body['website'])) {
     exit;
 }
 
+// ---- Config kontrolü: başvurular kapalıysa reddet ----
+$configFile = __DIR__ . '/data/site_config.json';
+if (is_file($configFile)) {
+    $cfg = json_decode((string)file_get_contents($configFile), true);
+    if (is_array($cfg) && isset($cfg['yetkiliOpen']) && $cfg['yetkiliOpen'] === false) {
+        http_response_code(403);
+        echo json_encode([
+            'error' => 'applications_closed',
+            'message' => $cfg['closedMessage'] ?? 'Başvurular şu an kapalı',
+        ]);
+        exit;
+    }
+}
+
 // ---- Zorunlu alan doğrulama ----
 $required = ['server', 'name', 'age', 'nickname', 'steamProfile', 'cs2Hours',
              'twKnow', 'prime', 'rank', 'activeMin', 'activeMax',
