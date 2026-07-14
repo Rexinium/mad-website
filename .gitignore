@@ -10,3 +10,7 @@ Thumbs.db
 # Bot çalışma dosyaları — git'te tutmayalım
 data/bans.lock
 data/bans.json.tmp
+
+# Bot secret dosyası — asla commit ETME
+bot/.env
+bot/node_modules/

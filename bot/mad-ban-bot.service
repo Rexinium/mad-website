@@ -1,0 +1,27 @@
+[Unit]
+Description=MAD CS2 Discord Ban Log Bridge
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=www-data
+Group=www-data
+WorkingDirectory=/opt/mad-ban-bot
+EnvironmentFile=/opt/mad-ban-bot/.env
+ExecStart=/usr/bin/node /opt/mad-ban-bot/index.js
+Restart=on-failure
+RestartSec=10
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=mad-ban-bot
+
+# Sertleştirme
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/opt/mad-ban-bot
+
+[Install]
+WantedBy=multi-user.target
