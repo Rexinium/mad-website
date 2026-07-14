@@ -514,6 +514,12 @@ function initRuleCats() {
       document.querySelectorAll('.rules-category').forEach(cat => {
         cat.classList.toggle('active', cat.id === 'cat-' + btn.dataset.cat);
       });
+      // Kategori değişince aktif kategorinin tepesine kaydır (kısa kategorilerde boşlukta kalmasın)
+      const layout = document.querySelector('.rules-layout');
+      if (layout) {
+        const y = layout.getBoundingClientRect().top + window.pageYOffset - 90;
+        window.scrollTo({ top: y, behavior: 'smooth' });
+      }
     });
   });
 }
