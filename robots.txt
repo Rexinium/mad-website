@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+Disallow: /admin.html
+Disallow: /admin-toggle.php
+Disallow: /submit-yetkili.php
+Disallow: /update_bans.php
+Disallow: /data/
+
+Sitemap: https://madcs2.com/sitemap.xml
