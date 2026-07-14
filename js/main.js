@@ -115,7 +115,9 @@ function initServerConnect() {
     btn.addEventListener('click', () => {
       const ip = btn.dataset.connect;
       if (!ip) return;
-      window.location.href = 'steam://connect/' + ip;
+      // Port yoksa default 27015 ekle (steam://connect/ IP:PORT ister)
+      const addr = ip.includes(':') ? ip : ip + ':27015';
+      window.location.href = 'steam://connect/' + addr;
     });
   });
 }
