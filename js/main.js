@@ -581,7 +581,7 @@ function initYetkiliForm() {
         // Hepsi kapalı — butonu disable et
         openBtn.disabled = true;
         openBtn.classList.add('closed');
-        openBtn.innerHTML = '⛔ ' + (cfg.closedTitle || 'Başvurular Kapalı');
+        openBtn.textContent = '⛔ ' + (cfg.closedTitle || 'Başvurular Kapalı');
         openBtn.title = cfg.closedMessage || '';
         const applySection = openBtn.closest('.apply-section');
         if (applySection && cfg.closedMessage) {

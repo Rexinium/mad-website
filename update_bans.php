@@ -51,8 +51,11 @@ $ALLOWED_DURATION_CLASSES = ['perm', 'long', 'medium', 'short', 'instant'];
 function s(mixed $v, int $max = 200): string {
     if (!is_string($v)) return '';
     $v = trim($v);
-    if (strlen($v) > $max) $v = substr($v, 0, $max);
-    return $v;
+    // Multibyte-güvenli kes (yarım UTF-8 karakteri json_encode'u bozar)
+    if (mb_strlen($v, 'UTF-8') > $max) $v = mb_substr($v, 0, $max, 'UTF-8');
+    // Kontrol karakterlerini temizle (log/JSON kirliliği)
+    $v = preg_replace('/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/u', '', $v);
+    return $v ?? '';
 }
 
 $cleanEvents = [];
@@ -101,22 +104,17 @@ if (!$lock || !flock($lock, LOCK_EX)) {
 }
 
 try {
-    $isSnapshot = isset($data['generated']) || isset($data['totalEvents']);
-
-    if ($isSnapshot) {
-        $events = $cleanEvents;
-    } else {
-        $existing = [];
-        if (is_file($file)) {
-            $prev = json_decode((string)file_get_contents($file), true);
-            if (is_array($prev) && isset($prev['events']) && is_array($prev['events'])) {
-                $existing = $prev['events'];
-            }
+    // APPEND-ONLY: geçmişi silme yeteneği yok (token sızsa bile wipe imkânsız).
+    // Yeni event'ler üstte, mevcutlar altta; toplam 20000 ile sınırlı.
+    $existing = [];
+    if (is_file($file)) {
+        $prev = json_decode((string)file_get_contents($file), true);
+        if (is_array($prev) && isset($prev['events']) && is_array($prev['events'])) {
+            $existing = $prev['events'];
         }
-        // Yeniler üstte, sonra eskiler; toplamı 20000 ile sınırla
-        $events = array_merge($cleanEvents, $existing);
-        if (count($events) > 20000) $events = array_slice($events, 0, 20000);
     }
+    $events = array_merge($cleanEvents, $existing);
+    if (count($events) > 20000) $events = array_slice($events, 0, 20000);
 
     $out = [
         'generated'   => gmdate('Y-m-d\TH:i:s\Z'),
@@ -137,7 +135,7 @@ try {
 
     echo json_encode([
         'ok'           => true,
-        'mode'         => $isSnapshot ? 'snapshot' : 'append',
+        'mode'         => 'append',
         'received'     => count($cleanEvents),
         'totalEvents'  => count($events),
     ]);

@@ -24,6 +24,25 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 
+// ---- Origin/Referer zorunlu kontrolü (CSRF + cross-site spam koruması) ----
+// CORS header yanıtı okumayı engeller ama isteği engellemez; burada sunucu
+// tarafında reddediyoruz. Origin yoksa Referer'a düş.
+$reqOrigin = $_SERVER['HTTP_ORIGIN'] ?? '';
+if ($reqOrigin === '') {
+    $ref = $_SERVER['HTTP_REFERER'] ?? '';
+    if ($ref !== '') {
+        $p = parse_url($ref);
+        if (isset($p['scheme'], $p['host'])) {
+            $reqOrigin = $p['scheme'] . '://' . $p['host'] . (isset($p['port']) ? ':' . $p['port'] : '');
+        }
+    }
+}
+if (!in_array($reqOrigin, $ALLOWED_ORIGINS, true)) {
+    http_response_code(403);
+    echo json_encode(['error' => 'forbidden_origin', 'message' => 'Geçersiz kaynak']);
+    exit;
+}
+
 // ---- Webhook config'i yükle ----
 $config_path = '/etc/mad/webhooks.php';
 if (!file_exists($config_path)) {
