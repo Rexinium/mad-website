@@ -466,12 +466,18 @@ body {
   border: none;
   color: var(--text-muted);
   cursor: pointer;
-  font-size: 0.75rem;
-  padding: 0;
-  transition: color 0.2s;
+  font-size: 0.9rem;
+  padding: 0.35rem;
+  margin: -0.35rem -0.2rem -0.35rem 0;  /* dokunma alanını büyüt, görsel hizayı koru */
+  border-radius: 6px;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s, background 0.2s;
 }
 
-.copy-btn:hover { color: var(--accent); }
+.copy-btn:hover { color: var(--accent); background: rgba(255,58,26,0.1); }
 
 /* === AUTHORITY (VIP) CARDS === */
 .auth-controls {
@@ -774,11 +780,16 @@ body {
   gap: 1.5rem;
   align-items: start;
 }
+/* Grid blowout fix: min-width:auto varsayılanı geniş içeriğin (tablo, input)
+   kolonu şişirmesini engeller; 1fr artık container'a daralır, tablo kendi
+   sarmalayıcısında yatay kayar. */
+.ban-layout > * { min-width: 0; }
 
 .ban-sidebar {
   display: flex;
   flex-direction: column;
   gap: 1rem;
+  min-width: 0;
 }
 
 .ban-stats-card {
