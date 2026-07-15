@@ -973,7 +973,12 @@ body {
 }
 
 .duration-badge.perm    { background: rgba(239,68,68,0.15); color: #f87171; border: 1px solid rgba(239,68,68,0.3); }
-.duration-badge.temp    { background: rgba(234,179,8,0.12); color: #fbbf24; border: 1px solid rgba(234,179,8,0.3); }
+.duration-badge.long    { background: rgba(249,115,22,0.13); color: #fb923c; border: 1px solid rgba(249,115,22,0.3); }
+.duration-badge.medium  { background: rgba(234,179,8,0.12);  color: #fbbf24; border: 1px solid rgba(234,179,8,0.3); }
+.duration-badge.short   { background: rgba(132,204,22,0.12); color: #a3e635; border: 1px solid rgba(132,204,22,0.3); }
+.duration-badge.instant { background: rgba(148,163,184,0.12); color: #cbd5e1; border: 1px solid rgba(148,163,184,0.3); }
+/* geriye dönük: eski 'temp' sınıfı = medium rengi */
+.duration-badge.temp    { background: rgba(234,179,8,0.12);  color: #fbbf24; border: 1px solid rgba(234,179,8,0.3); }
 
 .auth-tag {
   display: inline-block;

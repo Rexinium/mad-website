@@ -10,7 +10,7 @@ const esc = s => String(s == null ? '' : s)
 
 const ALLOWED_BAN_TYPES  = new Set(['ban', 'unban', 'kick', 'mute', 'unmute', 'gag', 'ungag']);
 const ALLOWED_SERVERS    = new Set(['awp', 'aim', 'redline']);
-const ALLOWED_DUR_CLASS  = new Set(['perm', 'long', 'short', 'temp']);
+const ALLOWED_DUR_CLASS  = new Set(['perm', 'long', 'medium', 'short', 'instant']);
 const safeType   = t => ALLOWED_BAN_TYPES.has(t) ? t : 'ban';
 const safeServer = s => ALLOWED_SERVERS.has(s)   ? s : '';
 const safeDurCls = c => ALLOWED_DUR_CLASS.has(c) ? c : 'perm';
