@@ -226,8 +226,21 @@ async function loadBans() {
     const res = await fetch('data/bans.json');
     if (!res.ok) throw new Error('bans.json okunamadı');
     const data = await res.json();
-    BAN_DATA = data.events || [];
-    updateBanStats(data);
+    const cleanMd = s => {
+      if (!s) return s;
+      let v = String(s).replace(/\[([^\]]+)\]\(([^)]*)\)/g, '$1');
+      v = v.replace(/\]\(https?:\/\/\S*/gi, '');
+      v = v.replace(/\s*\]\s*\(?\s*https?.*$/i, '');
+      return v.trim();
+    };
+    const events = (data.events || []).map(e => ({
+      ...e,
+      admin:  cleanMd(e.admin),
+      player: cleanMd(e.player),
+      reason: cleanMd(e.reason),
+    }));
+    BAN_DATA = events;
+    updateBanStats({ ...data, events });
     renderBans();
   } catch (err) {
     tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:2rem;color:#f87171;">Yasaklama verisi yüklenemedi.</td></tr>';
