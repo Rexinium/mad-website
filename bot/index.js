@@ -76,7 +76,7 @@ function classifyDuration(txt) {
 // ---- Embed metni topla (title + desc + fields) ----
 function stripMdLinks(s) {
   if (!s) return s;
-  return String(s).replace(/\[([^\]]+)\]\(([^)]+)\)/g, '$1 $2');
+  return String(s).replace(/\[([^\]]+)\]\(([^)]+)\)/g, '$1\n$2');
 }
 function embedText(e) {
   const parts = [];

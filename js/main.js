@@ -229,8 +229,8 @@ async function loadBans() {
     const cleanMd = s => {
       if (!s) return s;
       let v = String(s).replace(/\[([^\]]+)\]\(([^)]*)\)/g, '$1');
-      v = v.replace(/\]\(https?:\/\/\S*/gi, '');
-      v = v.replace(/\s*\]\s*\(?\s*https?.*$/i, '');
+      v = v.replace(/\s*\]\s*\(?\s*https?[^\s]*/gi, '');
+      v = v.replace(/\s+https?[:/]?[^\s]*/gi, '');
       return v.trim();
     };
     const events = (data.events || []).map(e => ({
