@@ -537,6 +537,40 @@ const IP_TO_KEY = {
   '185.193.165.48':  'redline',
 };
 
+// Harita adı -> görsel yolu. img/maps/<map>.jpg (veya .png/.webp) koyman yeterli.
+// Buraya eklemesen bile img/maps/<map>.jpg mevcutsa otomatik denenir; yoksa default'a döner.
+const MAP_IMAGES = {
+  // 'awp_lego_2': 'img/maps/awp_lego_2.jpg',
+  // 'aim_pistol': 'img/maps/aim_pistol.jpg',
+  // 'aim_all_pistol': 'img/maps/aim_all_pistol.jpg',
+  // 'aim_redline': 'img/maps/aim_redline.jpg',
+};
+const MAP_IMG_EXTS = ['jpg', 'png', 'webp'];
+
+function applyHeroImage(heroImg, mapName) {
+  if (!heroImg) return;
+  const def = heroImg.dataset.default || heroImg.src;
+  if (!heroImg.dataset.default) heroImg.dataset.default = def;
+  if (!mapName) { heroImg.src = def; return; }
+  const clean = String(mapName).trim().toLowerCase().replace(/[^a-z0-9_]/g, '');
+  if (heroImg.dataset.currentMap === clean) return;
+  heroImg.dataset.currentMap = clean;
+
+  const explicit = MAP_IMAGES[clean];
+  const candidates = explicit ? [explicit] : MAP_IMG_EXTS.map(ext => `img/maps/${clean}.${ext}`);
+
+  let i = 0;
+  const tryNext = () => {
+    if (i >= candidates.length) { heroImg.src = def; return; }
+    const url = candidates[i++];
+    const probe = new Image();
+    probe.onload = () => { heroImg.src = url; };
+    probe.onerror = tryNext;
+    probe.src = url;
+  };
+  tryNext();
+}
+
 async function initServerPopulate() {
   const cards = document.querySelectorAll('.server-card[data-ip]');
   if (!cards.length) return;
@@ -556,6 +590,7 @@ async function initServerPopulate() {
     const barEl    = card.querySelector('[data-a2s="popbar"]');
     const mapEl    = card.querySelector('[data-a2s="map"]');
     const statusEl = card.querySelector('[data-a2s="status"]');
+    const heroEl   = card.querySelector('[data-a2s="hero"]');
 
     if (info && info.online !== null) {
       const online = info.online;
@@ -565,9 +600,11 @@ async function initServerPopulate() {
       if (barEl) barEl.style.setProperty('--pct', pct + '%');
       if (mapEl && info.map) mapEl.textContent = info.map;
       if (statusEl) { statusEl.textContent = 'Çevrimiçi'; statusEl.style.color = '#22c55e'; }
+      applyHeroImage(heroEl, info.map);
     } else {
       if (popEl) popEl.textContent = '— / —';
       if (statusEl) { statusEl.textContent = 'Çevrimdışı'; statusEl.style.color = '#f87171'; }
+      applyHeroImage(heroEl, null);
     }
   });
 }

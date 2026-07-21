@@ -74,6 +74,10 @@ function classifyDuration(txt) {
 }
 
 // ---- Embed metni topla (title + desc + fields) ----
+function stripMdLinks(s) {
+  if (!s) return s;
+  return String(s).replace(/\[([^\]]+)\]\(([^)]+)\)/g, '$1 $2');
+}
 function embedText(e) {
   const parts = [];
   if (e.title) parts.push(e.title);
@@ -82,7 +86,7 @@ function embedText(e) {
     if (f?.name) parts.push(f.name);
     if (f?.value) parts.push(f.value);
   }
-  return parts.join('\n');
+  return stripMdLinks(parts.join('\n'));
 }
 
 // ---- Regex'ler ----
