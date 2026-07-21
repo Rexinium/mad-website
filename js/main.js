@@ -361,7 +361,11 @@ function renderBans() {
       const icon = BAN_ICONS[type] || BAN_ICONS.ban;
       const iconClass = type;  // CSS: .ban-type-icon.<type>, .action-badge.action-<type>
       const srv = SRV_TAG[server] || { cls: '', label: '' };
-      const dt = e.ts ? new Date(e.ts).toLocaleDateString('tr-TR') : '';
+      let dt = '';
+      if (e.ts) {
+        const d = new Date(e.ts);
+        dt = d.toLocaleDateString('tr-TR') + ' · ' + d.toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' });
+      }
       const actionText = e.action || type.toUpperCase();
 
       // Anlık aksiyonlar (kick, un-türevleri) süre taşımaz
