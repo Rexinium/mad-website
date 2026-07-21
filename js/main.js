@@ -279,15 +279,49 @@ const TYPE_FAMILY = {
   mute: new Set(['mute', 'unmute', 'gag', 'ungag']),
 };
 
+/* Arama sorgusunu normalize et: kullanıcı isim / Steam64 / [U:1:X] / profil URL
+   girebilir. Her birinde eşleşen alanı belirle. */
+function parseBanQuery(raw) {
+  if (!raw) return { text: '', sid64: '', sid3num: '' };
+  const q = raw.trim();
+  // Steam profil URL — profiles/ (17 haneli Steam64) veya /id/vanity
+  const urlProf = q.match(/steamcommunity\.com\/profiles\/(7656119\d{10})/i);
+  if (urlProf) return { text: '', sid64: urlProf[1], sid3num: '' };
+  // Ham Steam64
+  const bareSid64 = q.match(/^(7656119\d{10})$/);
+  if (bareSid64) return { text: '', sid64: bareSid64[1], sid3num: '' };
+  // SteamID3 [U:1:XXXX]
+  const sid3 = q.match(/\[?U:1:(\d+)\]?/i);
+  if (sid3) return { text: '', sid64: '', sid3num: sid3[1] };
+  // /id/vanity URL — Steam vanity çözemeyiz, düz metin gibi aransın
+  return { text: q.toLowerCase(), sid64: '', sid3num: '' };
+}
+
 function filteredBans() {
-  const q = BAN_FILTER.search;
+  const parsed = BAN_FILTER.searchParsed || { text: '', sid64: '', sid3num: '' };
   return BAN_DATA.filter(e => {
     if (BAN_FILTER.type !== 'all') {
       const fam = TYPE_FAMILY[BAN_FILTER.type];
       if (!fam || !fam.has(e.type)) return false;
     }
     if (!BAN_FILTER.servers.has(e.server)) return false;
-    if (q && !(e.player + ' ' + e.admin).toLowerCase().includes(q)) return false;
+    if (parsed.sid64) {
+      // Steam64 eşleşmesi: URL'de veya event üzerinde hesaplanan Steam64
+      if (typeof e.playerSteamUrl === 'string' && e.playerSteamUrl.includes(parsed.sid64)) return true;
+      if (extractSteam64(e) === parsed.sid64) return true;
+      return false;
+    }
+    if (parsed.sid3num) {
+      // [U:1:X] eşleşmesi: playerSteamId veya adminSteamId içinde
+      const tag = `[U:1:${parsed.sid3num}]`;
+      if ((e.playerSteamId || '').includes(tag)) return true;
+      if ((e.adminSteamId || '').includes(tag)) return true;
+      return false;
+    }
+    if (parsed.text) {
+      const hay = (e.player + ' ' + e.admin).toLowerCase();
+      if (!hay.includes(parsed.text)) return false;
+    }
     return true;
   });
 }
@@ -398,11 +432,17 @@ function initBanTabs() {
 function initBanSearch() {
   const input = document.getElementById('banSearchInput');
   if (!input) return;
+  // Placeholder'ı yeni arama yeteneklerini yansıtacak şekilde güncelle
+  if (input.getAttribute('placeholder') === 'Oyuncu ara...') {
+    input.setAttribute('placeholder', 'İsim, SteamID veya profil linki');
+  }
   let deb;
   input.addEventListener('input', () => {
     clearTimeout(deb);
     deb = setTimeout(() => {
-      BAN_FILTER.search = input.value.toLowerCase().trim();
+      const raw = input.value.trim();
+      BAN_FILTER.search = raw.toLowerCase();
+      BAN_FILTER.searchParsed = parseBanQuery(raw);
       BAN_PAGE = 1;
       if (BAN_DATA.length) renderBans();
     }, 250);
