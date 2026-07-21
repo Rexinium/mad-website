@@ -256,7 +256,7 @@ function openWeaponModal(wname) {
     const wsBtn = cmd
       ? `<button type="button" class="skin-item-ws" data-cmd="${escS(cmd)}" title="${escS(cmd)} kodunu kopyala">📋 ${escS(cmd)}</button>`
       : '';
-    html += `<div class="skin-item ${isActive ? 'active' : ''}" data-key="${escS(key)}" data-img="${safeSrc}" data-name="${escS(s.name)}" data-rarity="${escS(rarityName)}" data-paint="${paintIdx}" style="--rc:${color}">
+    html += `<div class="skin-item ${isActive ? 'active' : ''}" data-key="${escS(key)}" data-img="${safeSrc}" data-name="${escS(s.name)}" data-rarity="${escS(rarityName)}" data-paint="${paintIdx}" data-cmd="${escS(cmd)}" style="--rc:${color}">
       <div class="skin-item-img"><img loading="lazy" src="${safeSrc}" alt="${escS(s.name)}"></div>
       <div class="skin-item-name">${escS(s.name)}</div>
       <div class="skin-item-rarity"><span class="rarity-dot"></span>${escS(rarityName)}</div>
@@ -291,16 +291,29 @@ function openWeaponModal(wname) {
     });
   });
 
-  /* Skin tıklama: seç / kaldır */
+  /* Skin tıklama: seç + css_ws komutunu doğrudan panoya kopyala */
+  const copyCmd = async (cmd) => {
+    if (!cmd) return false;
+    try { await navigator.clipboard.writeText(cmd); return true; }
+    catch {
+      const ta = document.createElement('textarea');
+      ta.value = cmd; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.select();
+      let ok = false;
+      try { ok = document.execCommand('copy'); } catch {}
+      document.body.removeChild(ta);
+      return ok;
+    }
+  };
+
   body.querySelectorAll('.skin-item').forEach(item => {
-    item.addEventListener('click', () => {
+    item.addEventListener('click', async () => {
       const key = item.dataset.key;
       const wasActive = item.classList.contains('active');
 
       if (key === '__vanilla') {
         delete SELECTED[w.name];
       } else if (wasActive) {
-        // aynı skine tekrar tıklandı -> vanilla'ya dön
         delete SELECTED[w.name];
       } else {
         SELECTED[w.name] = {
@@ -313,11 +326,16 @@ function openWeaponModal(wname) {
       saveSelections();
 
       body.querySelectorAll('.skin-item').forEach(el => el.classList.remove('active'));
+      const cmd = item.dataset.cmd || '';
       if (SELECTED[w.name]) {
         item.classList.add('active');
-        if (window.showToast) window.showToast(`${w.name} → ${item.dataset.name}`, 'check');
+        if (cmd) {
+          const ok = await copyCmd(cmd);
+          if (window.showToast) window.showToast(ok ? `Kopyalandı: ${cmd} — CS2 konsoluna yapıştır` : 'Kopyalama başarısız', ok ? 'check' : 'error');
+        } else if (window.showToast) {
+          window.showToast(`${w.name} → ${item.dataset.name}`, 'check');
+        }
       } else {
-        // vanilla aktif
         const v = body.querySelector('.skin-item[data-key="__vanilla"]');
         if (v) v.classList.add('active');
         if (window.showToast) window.showToast(`${w.name} → Default`, 'check');

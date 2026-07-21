@@ -578,10 +578,10 @@ function applyHeroImage(heroImg, mapName) {
 
   let i = 0;
   const tryNext = () => {
-    if (i >= candidates.length) { heroImg.src = def; return; }
+    if (i >= candidates.length) { heroImg.src = def; heroImg.classList.remove('is-map'); return; }
     const url = candidates[i++];
     const probe = new Image();
-    probe.onload = () => { heroImg.src = url; };
+    probe.onload = () => { heroImg.src = url; heroImg.classList.add('is-map'); };
     probe.onerror = tryNext;
     probe.src = url;
   };
