@@ -15,6 +15,23 @@ const safeType   = t => ALLOWED_BAN_TYPES.has(t) ? t : 'ban';
 const safeServer = s => ALLOWED_SERVERS.has(s)   ? s : '';
 const safeDurCls = c => ALLOWED_DUR_CLASS.has(c) ? c : 'perm';
 
+/* Bir ban event'inden Steam64 ID çıkar (varsa URL'den, yoksa [U:1:X]'den hesapla).
+   Steam64 = 76561197960265728 + accountId (BigInt gerekir; 32-bit overflow). */
+function extractSteam64(e) {
+  if (e && typeof e.playerSteamUrl === 'string') {
+    const m = e.playerSteamUrl.match(/\/profiles\/(7656119\d{10})/);
+    if (m) return m[1];
+  }
+  if (e && typeof e.playerSteamId === 'string') {
+    const m = e.playerSteamId.match(/^\[U:1:(\d+)\]$/);
+    if (m) {
+      try { return (BigInt('76561197960265728') + BigInt(m[1])).toString(); }
+      catch (err) { return ''; }
+    }
+  }
+  return '';
+}
+
 /* === LAVA PARTICLES === (performans için no-op'a alındı) */
 function initLavaParticles() { /* devre dışı — arka plan statik gradient */ }
 
@@ -308,9 +325,19 @@ function renderBans() {
         durCell = `<span class="duration-badge ${durClass}">${esc(e.duration || 'Kalıcı')}</span>`;
       }
 
+      // Steam profil linki + Steam64 gösterimi (kim ban yemiş, isim değiştirmiş mi ayırt etmek için)
+      const s64 = extractSteam64(e);
+      const profileUrl = s64 ? `https://steamcommunity.com/profiles/${s64}` : '';
+      const nameCell = profileUrl
+        ? `<a class="ban-player-name" href="${esc(profileUrl)}" target="_blank" rel="noopener noreferrer" title="Steam profilini aç">${esc(e.player)}</a>`
+        : `<span class="ban-player-name" title="${esc(e.playerSteamId)}">${esc(e.player)}</span>`;
+      const idLine = s64
+        ? `<span class="ban-player-sid">${esc(s64)}</span> · <span class="ban-player-dt">${esc(dt)}</span>`
+        : `<span class="ban-player-dt">${esc(dt)}</span>`;
+
       return `<tr data-type="${type}" data-srv="${server}">
         <td><div class="ban-type-icon ${iconClass}">${icon}</div></td>
-        <td><span class="ban-player-name" title="${esc(e.playerSteamId)}">${esc(e.player)}</span><br><span style="font-size:0.7rem;color:var(--text-dim)">${esc(dt)}</span></td>
+        <td class="ban-player-cell">${nameCell}<br>${idLine}</td>
         <td><span class="action-badge action-${type}">${esc(actionText)}</span></td>
         <td>${durCell}</td>
         <td style="color:var(--text);">${esc(e.admin)}</td>

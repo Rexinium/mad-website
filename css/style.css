@@ -991,6 +991,28 @@ body {
 /* geriye dönük: eski 'temp' sınıfı = medium rengi */
 .duration-badge.temp    { background: rgba(234,179,8,0.12);  color: #fbbf24; border: 1px solid rgba(234,179,8,0.3); }
 
+/* Ban satırı oyuncu adı: Steam profil linki + Steam64 alt satırı */
+.ban-player-cell { line-height: 1.35; }
+.ban-player-name {
+  color: var(--text);
+  text-decoration: none;
+  font-weight: 500;
+  border-bottom: 1px dashed transparent;
+  transition: color 0.15s, border-color 0.15s;
+}
+a.ban-player-name:hover {
+  color: var(--accent);
+  border-bottom-color: rgba(255,58,26,0.5);
+}
+.ban-player-sid {
+  font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+  font-size: 0.68rem;
+  color: var(--text-dim);
+  letter-spacing: 0.02em;
+  user-select: all;
+}
+.ban-player-dt { font-size: 0.7rem; color: var(--text-dim); }
+
 .auth-tag {
   display: inline-block;
   padding: 0.18rem 0.55rem;

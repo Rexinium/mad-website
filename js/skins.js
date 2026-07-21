@@ -246,10 +246,15 @@ function openWeaponModal(wname) {
     const rarityName = (s.rarity && s.rarity.name) || 'Common';
     const isActive = selKey === key;
     const safeSrc = escS(safeImg(s.image));
-    // paint_index sadece sayı olmalı (!ws komutu için)
+    // paint_index sadece sayı olmalı (css_ws komutu için)
     const paintIdx = /^\d+$/.test(String(s.paint_index || '')) ? s.paint_index : '';
-    const wsBtn = paintIdx
-      ? `<button type="button" class="skin-item-ws" data-ws="${paintIdx}" title="!ws ${paintIdx} kodunu kopyala">📋 !ws ${paintIdx}</button>`
+    // Silah slug: "weapon_ak47" -> "ak47" (CSSharp css_ws komutu formatı)
+    const wRaw = (s.weapon && s.weapon.id) ? String(s.weapon.id) : '';
+    const wSlug = wRaw.replace(/^weapon_/, '').toLowerCase();
+    const validSlug = /^[a-z0-9_]+$/.test(wSlug) ? wSlug : '';
+    const cmd = (validSlug && paintIdx) ? `css_ws ${validSlug} ${paintIdx}` : '';
+    const wsBtn = cmd
+      ? `<button type="button" class="skin-item-ws" data-cmd="${escS(cmd)}" title="${escS(cmd)} kodunu kopyala">📋 ${escS(cmd)}</button>`
       : '';
     html += `<div class="skin-item ${isActive ? 'active' : ''}" data-key="${escS(key)}" data-img="${safeSrc}" data-name="${escS(s.name)}" data-rarity="${escS(rarityName)}" data-paint="${paintIdx}" style="--rc:${color}">
       <div class="skin-item-img"><img loading="lazy" src="${safeSrc}" alt="${escS(s.name)}"></div>
@@ -262,13 +267,12 @@ function openWeaponModal(wname) {
   body.innerHTML = html;
   body.scrollTop = 0;
 
-  /* !ws kod kopyala butonu — skin seçim tıklamasını bloklar */
+  /* css_ws kod kopyala butonu — skin seçim tıklamasını bloklar */
   body.querySelectorAll('.skin-item-ws').forEach(btn => {
     btn.addEventListener('click', async (e) => {
       e.stopPropagation();
-      const paintIdx = btn.dataset.ws;
-      if (!paintIdx) return;
-      const cmd = '!ws ' + paintIdx;
+      const cmd = btn.dataset.cmd;
+      if (!cmd) return;
       try {
         await navigator.clipboard.writeText(cmd);
         if (window.showToast) window.showToast('Kopyalandı: ' + cmd, 'check');
