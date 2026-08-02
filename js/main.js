@@ -575,7 +575,14 @@ function applyHeroImage(heroImg, mapName) {
   heroImg.dataset.currentMap = clean;
 
   const explicit = MAP_IMAGES[clean];
-  const candidates = explicit ? [explicit] : MAP_IMG_EXTS.map(ext => `img/maps/${clean}.${ext}`);
+  // 1) Local img/maps/<map>.{jpg,png,webp}  2) ByMykel CS2 map screenshot GitHub CDN
+  const candidates = explicit
+    ? [explicit]
+    : [
+        ...MAP_IMG_EXTS.map(ext => `img/maps/${clean}.${ext}`),
+        `https://raw.githubusercontent.com/ByMykel/counter-strike-file-locations/main/static/panorama/images/overheadmaps/${clean}_png.png`,
+        `https://raw.githubusercontent.com/ByMykel/CSGO-API/main/public/images/maps/screenshots/${clean}.png`,
+      ];
 
   let i = 0;
   const tryNext = () => {
