@@ -16,7 +16,7 @@
       if (!r.ok) throw new Error('config fetch ' + r.status);
       return await r.json();
     } catch (e) {
-      return { yetkiliAwp: true, yetkiliAim: true, yetkiliRedline: true, closedTitle: '', closedMessage: '' };
+      return { yetkiliAwp: true, yetkiliAim: true, yetkiliRedline: true, yetkiliPro: true, closedTitle: '', closedMessage: '' };
     }
   }
 
@@ -24,6 +24,7 @@
     { key: 'yetkiliAwp',     row: 'row-awp' },
     { key: 'yetkiliAim',     row: 'row-aim' },
     { key: 'yetkiliRedline', row: 'row-redline' },
+    { key: 'yetkiliPro',     row: 'row-pro' },
   ];
 
   function renderStatus(cfg) {

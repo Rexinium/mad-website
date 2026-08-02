@@ -552,6 +552,7 @@ const IP_TO_KEY = {
   '185.193.165.2':   'awp',
   '185.193.165.102': 'aim',
   '185.193.165.48':  'redline',
+  '213.146.184.241': 'pro',
 };
 
 // Harita adı -> görsel yolu. img/maps/<map>.jpg (veya .png/.webp) koyman yeterli.
@@ -690,7 +691,7 @@ function initYetkiliForm() {
   if (!modal || !form || !openBtn) return;
 
   // Config check — sunucu bazlı: hepsi kapalıysa buton disabled, bazısı açıksa form'da sadece açık olanları göster
-  const SRV_KEY = { awp: 'yetkiliAwp', aim: 'yetkiliAim', redline: 'yetkiliRedline' };
+  const SRV_KEY = { awp: 'yetkiliAwp', aim: 'yetkiliAim', redline: 'yetkiliRedline', pro: 'yetkiliPro' };
   let siteCfg = null;
   fetch('/data/site_config.json?_=' + Date.now(), { cache: 'no-store' })
     .then(r => r.ok ? r.json() : null)
@@ -772,7 +773,7 @@ function initYetkiliForm() {
 
   function updateRankVisibility(server) {
     if (!rankAwpSel || !rankScoreSel || !rankPlaceholder) return;
-    const showAwp   = server === 'awp';
+    const showAwp   = server === 'awp' || server === 'pro';
     const showScore = server === 'aim' || server === 'redline';
 
     rankPlaceholder.hidden = showAwp || showScore;

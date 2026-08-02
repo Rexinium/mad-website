@@ -90,7 +90,7 @@ try {
     }
 
     // Whitelist edilen anahtarlar
-    $BOOL_KEYS = ['yetkiliAwp', 'yetkiliAim', 'yetkiliRedline'];
+    $BOOL_KEYS = ['yetkiliAwp', 'yetkiliAim', 'yetkiliRedline', 'yetkiliPro'];
     $STR_KEYS  = ['closedTitle', 'closedMessage'];
     $key = (string)($body['key'] ?? '');
     if (!in_array($key, $BOOL_KEYS, true) && !in_array($key, $STR_KEYS, true)) {

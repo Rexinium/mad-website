@@ -111,7 +111,7 @@ if (!empty($body['website'])) {
 
 // ---- Config kontrolü: seçilen sunucu için başvurular kapalıysa reddet ----
 $configFile = __DIR__ . '/data/site_config.json';
-$SERVER_KEY_MAP = ['awp' => 'yetkiliAwp', 'aim' => 'yetkiliAim', 'redline' => 'yetkiliRedline'];
+$SERVER_KEY_MAP = ['awp' => 'yetkiliAwp', 'aim' => 'yetkiliAim', 'redline' => 'yetkiliRedline', 'pro' => 'yetkiliPro'];
 if (is_file($configFile)) {
     $cfg = json_decode((string)file_get_contents($configFile), true);
     if (is_array($cfg)) {
@@ -146,6 +146,7 @@ $SERVER_LABEL = [
     'awp'     => 'AWP Lego',
     'aim'     => 'AIM Pistol',
     'redline' => 'AIM Redline',
+    'pro'     => 'Pro Public',
 ];
 if (!isset($SERVER_LABEL[$server])) {
     http_response_code(400);
