@@ -820,7 +820,7 @@ function initYetkiliForm() {
     payload.rulesRead = form.querySelector('[name="rulesRead"]').checked;
 
     // Rank normalize: server'a göre doğru select'ten rank'i backend'e "rank" olarak yolla
-    if (payload.server === 'awp') payload.rank = payload.rankAwp || '';
+    if (payload.server === 'awp' || payload.server === 'pro') payload.rank = payload.rankAwp || '';
     else if (payload.server === 'aim' || payload.server === 'redline') payload.rank = payload.rankScore || '';
     delete payload.rankAwp;
     delete payload.rankScore;
