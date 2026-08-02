@@ -575,13 +575,12 @@ function applyHeroImage(heroImg, mapName) {
   heroImg.dataset.currentMap = clean;
 
   const explicit = MAP_IMAGES[clean];
-  // 1) Local img/maps/<map>.{jpg,png,webp}  2) ByMykel CS2 map screenshot GitHub CDN
+  // 1) Local img/maps/<map>.{jpg,png,webp} (custom haritalar)  2) GameTracker CDN (official mapler)
   const candidates = explicit
     ? [explicit]
     : [
         ...MAP_IMG_EXTS.map(ext => `img/maps/${clean}.${ext}`),
-        `https://raw.githubusercontent.com/ByMykel/counter-strike-file-locations/main/static/panorama/images/overheadmaps/${clean}_png.png`,
-        `https://raw.githubusercontent.com/ByMykel/CSGO-API/main/public/images/maps/screenshots/${clean}.png`,
+        `https://image.gametracker.com/images/maps/160x120/csgo/${clean}.jpg`,
       ];
 
   let i = 0;
