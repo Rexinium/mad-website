@@ -178,7 +178,8 @@ if (!preg_match('#^https?://steamcommunity\.com/#i', (string)$body['steamProfile
 }
 
 // ---- Webhook seç ----
-$webhookUrl = $WEBHOOKS[$server] ?? null;
+// Pro Public için ayrı kanal yoksa AWP kanalına düşür (fallback)
+$webhookUrl = $WEBHOOKS[$server] ?? ($server === 'pro' ? ($WEBHOOKS['awp'] ?? null) : null);
 if (!$webhookUrl) {
     http_response_code(500);
     echo json_encode(['error' => 'webhook_not_set', 'message' => 'Webhook yapılandırılmamış']);
